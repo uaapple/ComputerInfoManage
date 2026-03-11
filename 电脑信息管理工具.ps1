@@ -7,8 +7,10 @@ $script:RootDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $script:DataDir = Join-Path $script:RootDir 'data'
 $script:ComputersFile = Join-Path $script:DataDir 'computers.json'
 $script:ColleaguesFile = Join-Path $script:DataDir 'colleagues.json'
+$script:InventoryMailBatchesFile = Join-Path $script:DataDir 'inventory_mail_batches.json'
 $script:Computers = @()
 $script:Colleagues = @()
+$script:InventoryMailBatches = @()
 $script:CurrentComputerId = $null
 $script:CurrentColleagueEditorId = $null
 $script:CurrentInventoryComputerId = $null
@@ -22,7 +24,7 @@ function Ensure-DataFiles {
         New-Item -ItemType Directory -Path $script:DataDir | Out-Null
     }
 
-    foreach ($file in @($script:ComputersFile, $script:ColleaguesFile)) {
+    foreach ($file in @($script:ComputersFile, $script:ColleaguesFile, $script:InventoryMailBatchesFile)) {
         if (-not (Test-Path $file)) {
             '[]' | Set-Content -Path $file -Encoding UTF8
         }
@@ -118,6 +120,35 @@ function Normalize-ColleagueRecord {
     return $Record
 }
 
+function Normalize-InventoryMailBatchRecord {
+    param($Record)
+
+    if (-not ($Record.PSObject.Properties.Name -contains 'id') -or [string]::IsNullOrWhiteSpace([string]$Record.id)) {
+        Add-Member -InputObject $Record -MemberType NoteProperty -Name id -Value ([guid]::NewGuid().ToString()) -Force
+    }
+    if (-not ($Record.PSObject.Properties.Name -contains 'created_at') -or [string]::IsNullOrWhiteSpace([string]$Record.created_at)) {
+        Add-Member -InputObject $Record -MemberType NoteProperty -Name created_at -Value (Get-Date).ToString('yyyy-MM-dd HH:mm:ss') -Force
+    }
+    if (-not ($Record.PSObject.Properties.Name -contains 'status') -or [string]::IsNullOrWhiteSpace([string]$Record.status)) {
+        Add-Member -InputObject $Record -MemberType NoteProperty -Name status -Value 'draft_created' -Force
+    }
+    if (-not ($Record.PSObject.Properties.Name -contains 'recipient_count')) {
+        Add-Member -InputObject $Record -MemberType NoteProperty -Name recipient_count -Value 0 -Force
+    }
+    if (-not ($Record.PSObject.Properties.Name -contains 'skipped_count')) {
+        Add-Member -InputObject $Record -MemberType NoteProperty -Name skipped_count -Value 0 -Force
+    }
+    if (-not ($Record.PSObject.Properties.Name -contains 'subject_template')) {
+        Add-Member -InputObject $Record -MemberType NoteProperty -Name subject_template -Value '' -Force
+    }
+    if (-not ($Record.PSObject.Properties.Name -contains 'items') -or $null -eq $Record.items) {
+        Add-Member -InputObject $Record -MemberType NoteProperty -Name items -Value @() -Force
+    } else {
+        $Record.items = @($Record.items)
+    }
+
+    return $Record
+}
 function Get-ColleagueById {
     param([string]$Id)
 
@@ -180,10 +211,12 @@ function Load-AllData {
     Ensure-DataFiles
     $script:Colleagues = @(Load-JsonArray -Path $script:ColleaguesFile | ForEach-Object { Normalize-ColleagueRecord -Record $_ })
     $script:Computers = @(Load-JsonArray -Path $script:ComputersFile | ForEach-Object { Normalize-ComputerRecord -Record $_ })
+    $script:InventoryMailBatches = @(Load-JsonArray -Path $script:InventoryMailBatchesFile | ForEach-Object { Normalize-InventoryMailBatchRecord -Record $_ })
 }
 
 function Save-Computers { Save-JsonArray -Path $script:ComputersFile -Data $script:Computers }
 function Save-Colleagues { Save-JsonArray -Path $script:ColleaguesFile -Data $script:Colleagues }
+function Save-InventoryMailBatches { Save-JsonArray -Path $script:InventoryMailBatchesFile -Data $script:InventoryMailBatches }
 
 function Format-ColleagueOption {
     param($Colleague)
@@ -232,6 +265,234 @@ function Set-ComputerOwner {
     return $true
 }
 
+function Test-EmailAddressValid {
+    param([string]$Email)
+
+    if ([string]::IsNullOrWhiteSpace($Email)) { return $false }
+    $text = $Email.Trim()
+    return ($text -match '^[^@\s]+@[^@\s]+\.[^@\s]+$')
+}
+
+function Get-InventoryMailSubject {
+    return '[电脑盘点] 请确认您名下电脑信息'
+}
+
+function New-InventoryMailComputerSnapshot {
+    param($Computer)
+
+    return [PSCustomObject]@{
+        id = [string]$Computer.id
+        computer_name = [string]$Computer.computer_name
+        serial_number = [string]$Computer.serial_number
+        asset_number = [string]$Computer.asset_number
+        model = [string]$Computer.model
+        mac_address = [string]$Computer.mac_address
+        remark = [string]$Computer.remark
+        updated_at = [string]$Computer.updated_at
+    }
+}
+
+function Format-InventoryMailComputerList {
+    param([array]$Computers)
+
+    $lines = @()
+    $index = 1
+    foreach ($computer in @($Computers)) {
+        $lines += ('{0}. 电脑名称：{1}' -f $index, [string]$computer.computer_name)
+        $lines += ('   序列号：{0}' -f [string]$computer.serial_number)
+        $lines += ('   固定资产号：{0}' -f [string]$computer.asset_number)
+        $lines += ('   型号：{0}' -f [string]$computer.model)
+        $lines += ('   MAC 地址：{0}' -f [string]$computer.mac_address)
+        $remarkText = if ([string]::IsNullOrWhiteSpace([string]$computer.remark)) { '无' } else { [string]$computer.remark }
+        $lines += ('   备注：{0}' -f $remarkText)
+        $lines += ''
+        $index++
+    }
+
+    return ($lines -join [Environment]::NewLine).TrimEnd()
+}
+
+function Get-InventoryMailBody {
+    param(
+        [Parameter(Mandatory = $true)]$Colleague,
+        [Parameter(Mandatory = $true)][array]$Computers
+    )
+
+    $computerList = Format-InventoryMailComputerList -Computers $Computers
+    $displayName = [string]$Colleague.display_name
+
+    return @"
+$displayName，您好：
+
+为便于完成当前电脑资产盘点，请您确认以下登记在您名下的电脑目前仍由您本人使用，且设备状态正常。
+
+$computerList
+
+如以上电脑信息无误，则无需额外回复；自本邮件发出之时起两天内未回复，即视为您确认上述信息准确无误。
+
+如您发现电脑归属、设备状态或清单内容存在异议，请直接回复本邮件反馈，我们会及时更新。
+
+谢谢配合。
+"@
+}
+
+function Get-InventoryMailRecipients {
+    $validRecipients = @()
+    $skippedRecipients = @()
+    $groupedRecords = @($script:Computers | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.owner_id) } | Group-Object -Property owner_id)
+
+    foreach ($group in ($groupedRecords | Sort-Object Name)) {
+        $ownerId = [string]$group.Name
+        $colleague = Get-ColleagueById -Id $ownerId
+        $computers = @($group.Group | Sort-Object computer_name, serial_number, asset_number)
+
+        if ($null -eq $colleague) {
+            $skippedRecipients += [PSCustomObject]@{ colleague_id = $ownerId; display_name = '未知人员'; email = ''; computers = $computers; result = 'skipped_missing_colleague'; result_message = '未找到对应的人员记录。' }
+            continue
+        }
+
+        $email = [string]$colleague.email
+        if (-not (Test-EmailAddressValid -Email $email)) {
+            $skippedRecipients += [PSCustomObject]@{ colleague_id = [string]$colleague.id; display_name = [string]$colleague.display_name; email = $email; computers = $computers; result = 'skipped_invalid_email'; result_message = '邮箱为空或格式不正确。' }
+            continue
+        }
+
+        $validRecipients += [PSCustomObject]@{ colleague = $colleague; colleague_id = [string]$colleague.id; display_name = [string]$colleague.display_name; email = $email.Trim(); computers = $computers }
+    }
+
+    return [PSCustomObject]@{ ValidRecipients = @($validRecipients | Sort-Object display_name, email); SkippedRecipients = @($skippedRecipients | Sort-Object display_name, colleague_id) }
+}
+
+function New-InventoryMailBatchItem {
+    param([Parameter(Mandatory = $true)]$Recipient,[Parameter(Mandatory = $true)][string]$Result,[Parameter(Mandatory = $true)][string]$ResultMessage,[string]$DraftCreatedAt = '')
+
+    return [PSCustomObject]@{
+        colleague_id = [string]$Recipient.colleague_id
+        display_name = [string]$Recipient.display_name
+        email = [string]$Recipient.email
+        computer_ids = @($Recipient.computers | ForEach-Object { [string]$_.id })
+        computer_snapshot = @($Recipient.computers | ForEach-Object { New-InventoryMailComputerSnapshot -Computer $_ })
+        result = $Result
+        result_message = $ResultMessage
+        draft_created_at = $DraftCreatedAt
+    }
+}
+
+function Save-InventoryMailBatchRecord {
+    param([string]$CreatedAt,[string]$Status,[string]$SubjectTemplate,[array]$Items)
+
+    $batch = [PSCustomObject]@{
+        id = [guid]::NewGuid().ToString()
+        created_at = $CreatedAt
+        status = $Status
+        recipient_count = @($Items | Where-Object { $_.result -eq 'draft_created' }).Count
+        skipped_count = @($Items | Where-Object { $_.result -like 'skipped_*' }).Count
+        subject_template = $SubjectTemplate
+        items = @($Items)
+    }
+
+    $script:InventoryMailBatches = @($script:InventoryMailBatches) + $batch
+    Save-InventoryMailBatches
+}
+
+function Open-DefaultMailDraft {
+    param([Parameter(Mandatory = $true)][string]$To,[Parameter(Mandatory = $true)][string]$Subject,[Parameter(Mandatory = $true)][string]$Body)
+
+    try {
+        $mailToUri = 'mailto:{0}?subject={1}&body={2}' -f [Uri]::EscapeDataString($To), [Uri]::EscapeDataString($Subject), [Uri]::EscapeDataString($Body)
+        Start-Process $mailToUri | Out-Null
+        return [PSCustomObject]@{ Success = $true; Message = '已打开默认邮件客户端的撰写窗口。' }
+    } catch {
+        return [PSCustomObject]@{ Success = $false; Message = $_.Exception.Message }
+    }
+}
+
+function Get-InventoryMailResultSummary {
+    param([array]$CreatedItems,[array]$SkippedItems,[array]$FailedItems)
+
+    $lines = @(
+        "已打开邮件窗口：$(@($CreatedItems).Count) 人"
+        "已跳过：$(@($SkippedItems).Count) 人"
+        "打开失败：$(@($FailedItems).Count) 人"
+    )
+
+    if (@($SkippedItems).Count -gt 0) {
+        $lines += ''
+        $lines += '跳过名单：'
+        foreach ($item in @($SkippedItems)) {
+            $emailText = if ([string]::IsNullOrWhiteSpace([string]$item.email)) { '未登记邮箱' } else { [string]$item.email }
+            $lines += ('- {0}（{1}）：{2}' -f [string]$item.display_name, $emailText, [string]$item.result_message)
+        }
+    }
+
+    if (@($FailedItems).Count -gt 0) {
+        $lines += ''
+        $lines += '打开失败名单：'
+        foreach ($item in @($FailedItems)) {
+            $lines += ('- {0}（{1}）：{2}' -f [string]$item.display_name, [string]$item.email, [string]$item.result_message)
+        }
+    }
+
+    return ($lines -join [Environment]::NewLine)
+}
+
+function Start-InventoryMailCheck {
+    Load-AllData
+
+    $recipientSummary = Get-InventoryMailRecipients
+    $validRecipients = @($recipientSummary.ValidRecipients)
+    $skippedRecipients = @($recipientSummary.SkippedRecipients)
+
+    if ($validRecipients.Count -eq 0 -and $skippedRecipients.Count -eq 0) { Show-WarningMessage '当前没有可用于邮件盘点的在用电脑记录。'; return }
+
+    if ($validRecipients.Count -eq 0) {
+        $skipPreview = @($skippedRecipients | ForEach-Object { '{0}：{1}' -f [string]$_.display_name, [string]$_.result_message })
+        $message = @('当前没有可打开邮件窗口的同事。','','跳过名单：',$skipPreview) -join [Environment]::NewLine
+        Show-WarningMessage $message
+        return
+    }
+
+    $confirmMessage = @(
+        "即将为 $($validRecipients.Count) 位同事打开默认邮件客户端的盘点邮件撰写窗口。"
+        "将跳过 $($skippedRecipients.Count) 位邮箱异常或人员信息缺失的同事。"
+        ''
+        '是否继续？'
+    ) -join [Environment]::NewLine
+
+    $confirmResult = [System.Windows.Forms.MessageBox]::Show($confirmMessage,'确认打开邮件盘点',[System.Windows.Forms.MessageBoxButtons]::YesNo,[System.Windows.Forms.MessageBoxIcon]::Question)
+    if ($confirmResult -ne [System.Windows.Forms.DialogResult]::Yes) { return }
+
+    $createdAt = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+    $subjectTemplate = Get-InventoryMailSubject
+    $batchItems = @()
+    $createdItems = @()
+    $failedItems = @()
+
+    foreach ($recipient in $validRecipients) {
+        $body = Get-InventoryMailBody -Colleague $recipient.colleague -Computers $recipient.computers
+        $draftResult = Open-DefaultMailDraft -To ([string]$recipient.email) -Subject $subjectTemplate -Body $body
+        if ($draftResult.Success) {
+            $draftCreatedAt = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+            $createdItem = New-InventoryMailBatchItem -Recipient $recipient -Result 'draft_created' -ResultMessage $draftResult.Message -DraftCreatedAt $draftCreatedAt
+            $batchItems += $createdItem
+            $createdItems += $createdItem
+        } else {
+            $failedItem = New-InventoryMailBatchItem -Recipient $recipient -Result 'failed_mail_client_error' -ResultMessage ("打开默认邮件客户端失败：{0}" -f [string]$draftResult.Message)
+            $batchItems += $failedItem
+            $failedItems += $failedItem
+        }
+    }
+
+    foreach ($recipient in $skippedRecipients) {
+        $skippedItem = New-InventoryMailBatchItem -Recipient $recipient -Result ([string]$recipient.result) -ResultMessage ([string]$recipient.result_message)
+        $batchItems += $skippedItem
+    }
+
+    if ($batchItems.Count -gt 0) { Save-InventoryMailBatchRecord -CreatedAt $createdAt -Status 'draft_created' -SubjectTemplate $subjectTemplate -Items $batchItems }
+
+    $summaryText = Get-InventoryMailResultSummary -CreatedItems $createdItems -SkippedItems @($batchItems | Where-Object { $_.result -like 'skipped_*' }) -FailedItems $failedItems
+    Show-InfoMessage -Title '邮件盘点结果' -Message $summaryText
+}
 function Get-AutoPinyinText {
     param([string]$Text)
 
@@ -1257,7 +1518,7 @@ function Open-InventoryManager {
         $editorWidth = $panelWidth - 40
 
         $btnSearchInv.Location = New-Object System.Drawing.Point(($listWidth - 96), 33)
-        $txtSearchInv.Width = [Math]::Max(260, ($btnSearchInv.Left - 36))
+        $txtSearchInv.Width = [Math]::Max(120, ($btnSearchInv.Left - 36))
         $lblCountInv.Location = New-Object System.Drawing.Point(($listWidth - 180), 68)
         $lblCountInv.Size = New-Object System.Drawing.Size(162, 20)
         $gridInv.Size = New-Object System.Drawing.Size(($listWidth - 36), ($listHeight - 100))
@@ -1711,7 +1972,7 @@ function Open-ColleagueManager {
         $editorWidth = $panelWidth - 40
 
         $btnSearchCol.Location = New-Object System.Drawing.Point(($listWidth - 96), 33)
-        $txtSearchCol.Width = [Math]::Max(260, ($btnSearchCol.Left - 36))
+        $txtSearchCol.Width = [Math]::Max(120, ($btnSearchCol.Left - 36))
         $lblCountCol.Location = New-Object System.Drawing.Point(($listWidth - 138), 68)
         $lblCountCol.Size = New-Object System.Drawing.Size(120, 20)
         $gridCol.Size = New-Object System.Drawing.Size(($listWidth - 36), ($listHeight - 100))
@@ -1828,6 +2089,13 @@ $btnInventoryManager.Size = New-Object System.Drawing.Size(120, 32)
 $btnInventoryManager.FlatStyle = 'Flat'
 $btnInventoryManager.Anchor = 'Top,Right'
 $groupList.Controls.Add($btnInventoryManager)
+
+$btnInventoryMail = New-Object System.Windows.Forms.Button
+$btnInventoryMail.Text = '邮件盘点'
+$btnInventoryMail.Size = New-Object System.Drawing.Size(96, 32)
+$btnInventoryMail.FlatStyle = 'Flat'
+$btnInventoryMail.Anchor = 'Top,Right'
+$groupList.Controls.Add($btnInventoryMail)
 
 $btnColleagueManager = New-Object System.Windows.Forms.Button
 $btnColleagueManager.Text = '人员名单管理'
@@ -2006,12 +2274,13 @@ function Update-MainLayout {
     $editorWidth = $panelWidth - 40
 
     $btnColleagueManager.Location = New-Object System.Drawing.Point(($listWidth - 138), $toolbarY)
-    $btnInventoryManager.Location = New-Object System.Drawing.Point(($btnColleagueManager.Left - 128), $toolbarY)
+    $btnInventoryMail.Location = New-Object System.Drawing.Point(($btnColleagueManager.Left - 104), $toolbarY)
+    $btnInventoryManager.Location = New-Object System.Drawing.Point(($btnInventoryMail.Left - 128), $toolbarY)
     $btnExport.Location = New-Object System.Drawing.Point(($btnInventoryManager.Left - 104), $toolbarY)
     $btnDelete.Location = New-Object System.Drawing.Point(($btnExport.Left - 118), $toolbarY)
     $btnSearch.Location = New-Object System.Drawing.Point(($btnDelete.Left - 90), $toolbarY)
 
-    $txtSearch.Width = [Math]::Max(260, ($btnSearch.Left - 36))
+    $txtSearch.Width = [Math]::Max(120, ($btnSearch.Left - 36))
     $lblCount.Location = New-Object System.Drawing.Point(($listWidth - 350), 68)
     $lblCount.Size = New-Object System.Drawing.Size(332, 20)
     $splitComputerLists.Size = New-Object System.Drawing.Size(($listWidth - 36), ($listHeight - 110))
@@ -2043,6 +2312,7 @@ $btnClear.Add_Click({ Clear-ComputerForm })
 $btnDelete.Add_Click({ Remove-SelectedComputer })
 $btnExport.Add_Click({ Export-Computers })
 $btnInventoryManager.Add_Click({ Open-InventoryManager })
+$btnInventoryMail.Add_Click({ Start-InventoryMailCheck })
 $btnColleagueManager.Add_Click({ Open-ColleagueManager })
 $btnOwnerHistory.Add_Click({ Show-OwnerHistory })
 $gridInUse.Add_SelectionChanged({
@@ -2073,6 +2343,8 @@ $form.Add_Shown({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSi
 $form.Add_Resize({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSize 420 -DesiredSplitterDistance 950; Update-MainLayout })
 
 [void]$form.ShowDialog()
+
+
 
 
 

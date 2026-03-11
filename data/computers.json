@@ -47,7 +47,7 @@
         "asset_number":  "12346",
         "model":  "G8",
         "mac_address":  "ABCDEF",
-        "owner_id":  "",
+        "owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
         "owner_history":  [
                               {
                                   "changed_at":  "2026-03-11 00:34:05",
@@ -69,10 +69,17 @@
                                   "old_owner_name":  "李海川",
                                   "new_owner_id":  "",
                                   "new_owner_name":  "库存"
+                              },
+                              {
+                                  "changed_at":  "2026-03-12 03:16:48",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                                  "new_owner_name":  "陈靓"
                               }
                           ],
         "remark":  "",
-        "updated_at":  "2026-03-12 01:26:56"
+        "updated_at":  "2026-03-12 03:16:48"
     },
     {
         "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
