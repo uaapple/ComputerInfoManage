@@ -372,6 +372,26 @@ function Set-SelectedOwner {
     $lstOwnerSuggestions.Visible = $false
 }
 
+function Resolve-ColleagueFromOwnerInput {
+    param([string]$InputText)
+
+    $text = $InputText.Trim()
+    if ([string]::IsNullOrWhiteSpace($text)) {
+        return $null
+    }
+
+    foreach ($colleague in $script:Colleagues) {
+        if ((Format-ColleagueOption -Colleague $colleague) -eq $text) {
+            return $colleague
+        }
+    }
+
+    return $script:Colleagues | Where-Object {
+        [string]$_.display_name -eq $text -or
+        [string]$_.pinyin -eq $text -or
+        [string]$_.email -eq $text
+    } | Select-Object -First 1
+}
 function Refresh-OwnerSuggestions {
     if ($null -eq $lstOwnerSuggestions) { return }
 
@@ -413,6 +433,7 @@ function Get-FilteredComputers {
             asset_number = [string]$item.asset_number
             model = [string]$item.model
             mac_address = [string]$item.mac_address
+            owner_id = [string]$item.owner_id
             owner_name = Get-OwnerLabel -OwnerId ([string]$item.owner_id)
             remark = [string]$item.remark
             updated_at = [string]$item.updated_at
@@ -431,25 +452,96 @@ function Get-FilteredComputers {
         $_.remark.ToLowerInvariant().Contains($keyword)
     } | Sort-Object computer_name, serial_number)
 }
-function Refresh-ComputerGrid {
-    $grid.Rows.Clear()
-    $rows = Get-FilteredComputers
 
-    foreach ($rowData in $rows) {
-        $index = $grid.Rows.Add()
-        $row = $grid.Rows[$index]
-        $row.Tag = $rowData.id
-        $row.Cells['colName'].Value = $rowData.computer_name
-        $row.Cells['colSerial'].Value = $rowData.serial_number
-        $row.Cells['colAsset'].Value = $rowData.asset_number
-        $row.Cells['colModel'].Value = $rowData.model
-        $row.Cells['colMac'].Value = $rowData.mac_address
-        $row.Cells['colOwner'].Value = $rowData.owner_name
-        $row.Cells['colRemark'].Value = $rowData.remark
-        $row.Cells['colUpdated'].Value = $rowData.updated_at
+function Add-MainComputerGridColumns {
+    param($TargetGrid)
+
+    [void]$TargetGrid.Columns.Add('colName', '电脑名称')
+    [void]$TargetGrid.Columns.Add('colSerial', '序列号')
+    [void]$TargetGrid.Columns.Add('colAsset', '固定资产号')
+    [void]$TargetGrid.Columns.Add('colModel', '型号')
+    [void]$TargetGrid.Columns.Add('colMac', 'MAC 地址')
+    [void]$TargetGrid.Columns.Add('colOwner', '归属人')
+    [void]$TargetGrid.Columns.Add('colRemark', '备注')
+    [void]$TargetGrid.Columns.Add('colUpdated', '更新时间')
+    $TargetGrid.Columns['colUpdated'].FillWeight = 125
+}
+
+function Add-MainComputerGridRow {
+    param(
+        [Parameter(Mandatory = $true)]$TargetGrid,
+        [Parameter(Mandatory = $true)]$RowData
+    )
+
+    $index = $TargetGrid.Rows.Add()
+    $row = $TargetGrid.Rows[$index]
+    $row.Tag = $RowData.id
+    $row.Cells['colName'].Value = $RowData.computer_name
+    $row.Cells['colSerial'].Value = $RowData.serial_number
+    $row.Cells['colAsset'].Value = $RowData.asset_number
+    $row.Cells['colModel'].Value = $RowData.model
+    $row.Cells['colMac'].Value = $RowData.mac_address
+    $row.Cells['colOwner'].Value = $RowData.owner_name
+    $row.Cells['colRemark'].Value = $RowData.remark
+    $row.Cells['colUpdated'].Value = $RowData.updated_at
+}
+
+function Get-MainSelectedComputerId {
+    if (-not [string]::IsNullOrWhiteSpace([string]$script:CurrentComputerId)) {
+        return [string]$script:CurrentComputerId
     }
 
-    $lblCount.Text = "共 $($rows.Count) 台电脑"
+    foreach ($targetGrid in @($gridInUse, $gridInventoryMain)) {
+        if ($null -ne $targetGrid -and $targetGrid.SelectedRows.Count -gt 0) {
+            return [string]$targetGrid.SelectedRows[0].Tag
+        }
+    }
+
+    return ''
+}
+
+function Select-MainComputerRow {
+    param([string]$ComputerId)
+
+    if ([string]::IsNullOrWhiteSpace($ComputerId)) { return $false }
+
+    foreach ($targetGrid in @($gridInUse, $gridInventoryMain)) {
+        if ($null -eq $targetGrid) { continue }
+
+        foreach ($row in $targetGrid.Rows) {
+            if ([string]$row.Tag -eq $ComputerId) {
+                if ($targetGrid -eq $gridInUse -and $null -ne $gridInventoryMain) { $gridInventoryMain.ClearSelection() }
+                if ($targetGrid -eq $gridInventoryMain -and $null -ne $gridInUse) { $gridInUse.ClearSelection() }
+                $targetGrid.ClearSelection()
+                $row.Selected = $true
+                $targetGrid.CurrentCell = $row.Cells['colName']
+                Fill-ComputerForm -ComputerId $ComputerId
+                return $true
+            }
+        }
+    }
+
+    return $false
+}
+
+function Refresh-ComputerGrid {
+    $gridInUse.Rows.Clear()
+    $gridInventoryMain.Rows.Clear()
+    $rows = Get-FilteredComputers
+    $inUseRows = @($rows | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.owner_id) })
+    $inventoryRows = @($rows | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.owner_id) })
+
+    foreach ($rowData in $inUseRows) {
+        Add-MainComputerGridRow -TargetGrid $gridInUse -RowData $rowData
+    }
+
+    foreach ($rowData in $inventoryRows) {
+        Add-MainComputerGridRow -TargetGrid $gridInventoryMain -RowData $rowData
+    }
+
+    $groupInUse.Text = "在用电脑（$($inUseRows.Count) 台）"
+    $groupInventoryMain.Text = "库存电脑（$($inventoryRows.Count) 台）"
+    $lblCount.Text = "在用 $($inUseRows.Count) 台，库存 $($inventoryRows.Count) 台，共 $($rows.Count) 台"
 }
 
 function Clear-ComputerForm {
@@ -462,7 +554,8 @@ function Clear-ComputerForm {
     $txtRemark.Text = ''
     Set-SelectedOwner -Colleague $null
     $lblMode.Text = '当前模式：新增'
-    $grid.ClearSelection()
+    if ($null -ne $gridInUse) { $gridInUse.ClearSelection() }
+    if ($null -ne $gridInventoryMain) { $gridInventoryMain.ClearSelection() }
 }
 
 function Fill-ComputerForm {
@@ -559,33 +652,45 @@ function Save-ComputerRecord {
 }
 
 function Remove-SelectedComputer {
-    if ($grid.SelectedRows.Count -eq 0) {
-        Show-WarningMessage '请先选择要删除的电脑记录。'
+    $selectedId = Get-MainSelectedComputerId
+    if ([string]::IsNullOrWhiteSpace($selectedId)) {
+        Show-WarningMessage '请先选择要转入库存的电脑记录。'
         return
     }
 
-    $selectedId = [string]$grid.SelectedRows[0].Tag
+    $record = $script:Computers | Where-Object { $_.id -eq $selectedId } | Select-Object -First 1
+    if ($null -eq $record) {
+        Show-WarningMessage '未找到选中的电脑记录。'
+        return
+    }
+
+    if ([string]::IsNullOrWhiteSpace([string]$record.owner_id)) {
+        Show-WarningMessage '这台电脑已经在库存中。如需彻底删除，请到库存电脑管理里删除。'
+        return
+    }
+
+    $ownerLabel = Get-OwnerLabel -OwnerId ([string]$record.owner_id)
     $result = [System.Windows.Forms.MessageBox]::Show(
-        '确定删除这条电脑信息吗？',
-        '确认删除',
+        "确定将这台电脑从 $ownerLabel 名下转入库存吗？",
+        '确认转入库存',
         [System.Windows.Forms.MessageBoxButtons]::YesNo,
         [System.Windows.Forms.MessageBoxIcon]::Question
     )
 
     if ($result -ne [System.Windows.Forms.DialogResult]::Yes) { return }
 
-    $script:Computers = @($script:Computers | Where-Object { $_.id -ne $selectedId })
+    $now = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+    [void](Set-ComputerOwner -ComputerRecord $record -NewOwnerId '' -ChangedAt $now)
+    $record.updated_at = $now
+
     Save-Computers
     Refresh-ModelOptions
     Refresh-ComputerGrid
     Clear-ComputerForm
+    Show-InfoMessage '电脑已转入库存。若要彻底删除，请到库存电脑管理里删除。'
 }
-
 function Show-OwnerHistory {
-    $computerId = $script:CurrentComputerId
-    if ([string]::IsNullOrWhiteSpace($computerId) -and $grid.SelectedRows.Count -gt 0) {
-        $computerId = [string]$grid.SelectedRows[0].Tag
-    }
+    $computerId = Get-MainSelectedComputerId
 
     if ([string]::IsNullOrWhiteSpace($computerId)) {
         Show-WarningMessage '请先选择一台电脑，再查看归属历史。'
@@ -645,7 +750,6 @@ function Show-OwnerHistory {
 
     [void]$historyForm.ShowDialog($form)
 }
-
 function Export-Computers {
     if ($script:Computers.Count -eq 0) {
         Show-WarningMessage '当前没有可导出的电脑数据。'
@@ -693,6 +797,28 @@ function Set-SafeSplitterLayout {
     $SplitContainer.Panel2MinSize = $safePanel2Min
 
     $maxDistance = [Math]::Max($Panel1MinSize, $availableWidth - $safePanel2Min)
+    $safeDistance = [Math]::Max($Panel1MinSize, [Math]::Min($DesiredSplitterDistance, $maxDistance))
+    $SplitContainer.SplitterDistance = $safeDistance
+}
+
+function Set-SafeStackedSplitterLayout {
+    param(
+        [Parameter(Mandatory = $true)]$SplitContainer,
+        [int]$Panel2MinSize,
+        [int]$DesiredSplitterDistance,
+        [int]$Panel1MinSize = 140
+    )
+
+    $availableHeight = [int]$SplitContainer.ClientSize.Height
+    if ($availableHeight -le 0) {
+        return
+    }
+
+    $safePanel2Min = [Math]::Min($Panel2MinSize, [Math]::Max(0, $availableHeight - $Panel1MinSize))
+    $SplitContainer.Panel1MinSize = $Panel1MinSize
+    $SplitContainer.Panel2MinSize = $safePanel2Min
+
+    $maxDistance = [Math]::Max($Panel1MinSize, $availableHeight - $safePanel2Min)
     $safeDistance = [Math]::Max($Panel1MinSize, [Math]::Min($DesiredSplitterDistance, $maxDistance))
     $SplitContainer.SplitterDistance = $safeDistance
 }
@@ -1007,12 +1133,29 @@ function Open-InventoryManager {
         $asset = $txtAssetInv.Text.Trim()
         $model = $cmbModelInv.Text.Trim()
         $mac = $txtMacInv.Text.Trim()
+        $ownerText = $txtOwnerInv.Text.Trim()
         $ownerId = [string]$selectedInventoryOwnerId
+        if (-not [string]::IsNullOrWhiteSpace($ownerText) -and [string]::IsNullOrWhiteSpace($ownerId)) {
+            $resolvedOwner = Resolve-ColleagueFromOwnerInput -InputText $ownerText
+            if ($null -ne $resolvedOwner) {
+                $ownerId = [string]$resolvedOwner.id
+                Set-InventorySelectedOwner -Colleague $resolvedOwner
+            }
+        }
+        if (-not [string]::IsNullOrWhiteSpace($ownerText) -and [string]::IsNullOrWhiteSpace($ownerId)) {
+            Show-WarningMessage '归属同事未正确匹配，请从联想列表中重新选择一位人员。'
+            return
+        }
         $remark = $txtRemarkInv.Text.Trim()
         $now = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
 
+        $targetInventoryId = [string]$script:CurrentInventoryComputerId
+        if ([string]::IsNullOrWhiteSpace($targetInventoryId) -and $gridInv.SelectedRows.Count -gt 0) {
+            $targetInventoryId = [string]$gridInv.SelectedRows[0].Tag
+        }
+
         $duplicate = $script:Computers | Where-Object {
-            $_.id -ne $script:CurrentInventoryComputerId -and (
+            $_.id -ne $targetInventoryId -and (
                 [string]$_.serial_number -eq $serial -or
                 [string]$_.asset_number -eq $asset
             )
@@ -1023,7 +1166,7 @@ function Open-InventoryManager {
             return
         }
 
-        if ([string]::IsNullOrWhiteSpace($script:CurrentInventoryComputerId)) {
+        if ([string]::IsNullOrWhiteSpace($targetInventoryId)) {
             $script:Computers = @($script:Computers) + [PSCustomObject]@{
                 id = [guid]::NewGuid().ToString()
                 computer_name = $name
@@ -1046,10 +1189,11 @@ function Open-InventoryManager {
                 remark = $remark
                 updated_at = $now
             }
+            $targetInventoryId = [string]$script:Computers[-1].id
         } else {
             if (-not (Request-EditAuthorization)) { return }
             foreach ($item in $script:Computers) {
-                if ($item.id -eq $script:CurrentInventoryComputerId) {
+                if ($item.id -eq $targetInventoryId) {
                     $item.computer_name = $name
                     $item.serial_number = $serial
                     $item.asset_number = $asset
@@ -1063,19 +1207,23 @@ function Open-InventoryManager {
             }
         }
 
+        $script:CurrentInventoryComputerId = $targetInventoryId
+
         Save-Computers
         Refresh-ModelOptions
         Refresh-InventoryModelOptions
         Refresh-ComputerGrid
         Refresh-InventoryGrid
-        Clear-InventoryForm
+
         if ([string]::IsNullOrWhiteSpace($ownerId)) {
+            Clear-InventoryForm
             Show-InfoMessage '库存电脑已保存。'
         } else {
-            Show-InfoMessage '库存电脑已分配给指定同事，并已从库存列表移除。'
+            [void](Select-MainComputerRow -ComputerId $targetInventoryId)
+            Clear-InventoryForm
+            Show-InfoMessage '库存电脑已分配给指定同事，并已同步到主界面。'
         }
     }
-
     function Remove-InventoryComputer {
         if ($gridInv.SelectedRows.Count -eq 0) {
             Show-WarningMessage '请先选择要删除的库存电脑。'
@@ -1661,8 +1809,8 @@ $btnSearch.Anchor = 'Top,Right'
 $groupList.Controls.Add($btnSearch)
 
 $btnDelete = New-Object System.Windows.Forms.Button
-$btnDelete.Text = '删除选中电脑'
-$btnDelete.Size = New-Object System.Drawing.Size(110, 32)
+$btnDelete.Text = '转入库存'
+$btnDelete.Size = New-Object System.Drawing.Size(96, 32)
 $btnDelete.FlatStyle = 'Flat'
 $btnDelete.Anchor = 'Top,Right'
 $groupList.Controls.Add($btnDelete)
@@ -1689,41 +1837,68 @@ $btnColleagueManager.Anchor = 'Top,Right'
 $groupList.Controls.Add($btnColleagueManager)
 
 $lblCount = New-Object System.Windows.Forms.Label
-$lblCount.Text = '共 0 台电脑'
+$lblCount.Text = '在用 0 台，库存 0 台，共 0 台'
 $lblCount.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 9)
 $lblCount.ForeColor = [System.Drawing.Color]::FromArgb(95, 99, 104)
 $lblCount.TextAlign = 'MiddleRight'
 $lblCount.Anchor = 'Top,Right'
 $groupList.Controls.Add($lblCount)
 
-$grid = New-Object System.Windows.Forms.DataGridView
-$grid.Location = New-Object System.Drawing.Point(18, 82)
-$grid.Size = New-Object System.Drawing.Size(880, 610)
-$grid.Anchor = 'Top,Bottom,Left,Right'
-$grid.BackgroundColor = [System.Drawing.Color]::White
-$grid.BorderStyle = 'FixedSingle'
-$grid.AllowUserToAddRows = $false
-$grid.AllowUserToDeleteRows = $false
-$grid.AllowUserToResizeRows = $false
-$grid.MultiSelect = $false
-$grid.SelectionMode = 'FullRowSelect'
-$grid.ReadOnly = $true
-$grid.RowHeadersVisible = $false
-$grid.AutoSizeColumnsMode = 'Fill'
-$grid.ColumnHeadersHeight = 34
-$grid.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(227, 242, 253)
-$grid.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::Black
-$groupList.Controls.Add($grid)
+$splitComputerLists = New-Object System.Windows.Forms.SplitContainer
+$splitComputerLists.Location = New-Object System.Drawing.Point(18, 92)
+$splitComputerLists.Size = New-Object System.Drawing.Size(880, 600)
+$splitComputerLists.Anchor = 'Top,Bottom,Left,Right'
+$splitComputerLists.Orientation = 'Horizontal'
+$splitComputerLists.SplitterWidth = 8
+$groupList.Controls.Add($splitComputerLists)
 
-[void]$grid.Columns.Add('colName', '电脑名称')
-[void]$grid.Columns.Add('colSerial', '序列号')
-[void]$grid.Columns.Add('colAsset', '固定资产号')
-[void]$grid.Columns.Add('colModel', '型号')
-[void]$grid.Columns.Add('colMac', 'MAC 地址')
-[void]$grid.Columns.Add('colOwner', '归属人')
-[void]$grid.Columns.Add('colRemark', '备注')
-[void]$grid.Columns.Add('colUpdated', '更新时间')
+$groupInUse = New-Object System.Windows.Forms.GroupBox
+$groupInUse.Text = '在用电脑（0 台）'
+$groupInUse.Dock = 'Fill'
+$groupInUse.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 9, [System.Drawing.FontStyle]::Bold)
+$splitComputerLists.Panel1.Controls.Add($groupInUse)
 
+$groupInventoryMain = New-Object System.Windows.Forms.GroupBox
+$groupInventoryMain.Text = '库存电脑（0 台）'
+$groupInventoryMain.Dock = 'Fill'
+$groupInventoryMain.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 9, [System.Drawing.FontStyle]::Bold)
+$splitComputerLists.Panel2.Controls.Add($groupInventoryMain)
+
+$gridInUse = New-Object System.Windows.Forms.DataGridView
+$gridInUse.Dock = 'Fill'
+$gridInUse.BackgroundColor = [System.Drawing.Color]::White
+$gridInUse.BorderStyle = 'FixedSingle'
+$gridInUse.AllowUserToAddRows = $false
+$gridInUse.AllowUserToDeleteRows = $false
+$gridInUse.AllowUserToResizeRows = $false
+$gridInUse.MultiSelect = $false
+$gridInUse.SelectionMode = 'FullRowSelect'
+$gridInUse.ReadOnly = $true
+$gridInUse.RowHeadersVisible = $false
+$gridInUse.AutoSizeColumnsMode = 'Fill'
+$gridInUse.ColumnHeadersHeight = 34
+$gridInUse.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(227, 242, 253)
+$gridInUse.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::Black
+$groupInUse.Controls.Add($gridInUse)
+Add-MainComputerGridColumns -TargetGrid $gridInUse
+
+$gridInventoryMain = New-Object System.Windows.Forms.DataGridView
+$gridInventoryMain.Dock = 'Fill'
+$gridInventoryMain.BackgroundColor = [System.Drawing.Color]::White
+$gridInventoryMain.BorderStyle = 'FixedSingle'
+$gridInventoryMain.AllowUserToAddRows = $false
+$gridInventoryMain.AllowUserToDeleteRows = $false
+$gridInventoryMain.AllowUserToResizeRows = $false
+$gridInventoryMain.MultiSelect = $false
+$gridInventoryMain.SelectionMode = 'FullRowSelect'
+$gridInventoryMain.ReadOnly = $true
+$gridInventoryMain.RowHeadersVisible = $false
+$gridInventoryMain.AutoSizeColumnsMode = 'Fill'
+$gridInventoryMain.ColumnHeadersHeight = 34
+$gridInventoryMain.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(227, 242, 253)
+$gridInventoryMain.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::Black
+$groupInventoryMain.Controls.Add($gridInventoryMain)
+Add-MainComputerGridColumns -TargetGrid $gridInventoryMain
 $groupForm = New-Object System.Windows.Forms.GroupBox
 $groupForm.Text = '电脑信息编辑'
 $groupForm.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10, [System.Drawing.FontStyle]::Bold)
@@ -1837,9 +2012,10 @@ function Update-MainLayout {
     $btnSearch.Location = New-Object System.Drawing.Point(($btnDelete.Left - 90), $toolbarY)
 
     $txtSearch.Width = [Math]::Max(260, ($btnSearch.Left - 36))
-    $lblCount.Location = New-Object System.Drawing.Point(($listWidth - 138), 68)
-    $lblCount.Size = New-Object System.Drawing.Size(120, 20)
-    $grid.Size = New-Object System.Drawing.Size(($listWidth - 36), ($listHeight - 100))
+    $lblCount.Location = New-Object System.Drawing.Point(($listWidth - 350), 68)
+    $lblCount.Size = New-Object System.Drawing.Size(332, 20)
+    $splitComputerLists.Size = New-Object System.Drawing.Size(($listWidth - 36), ($listHeight - 110))
+    Set-SafeStackedSplitterLayout -SplitContainer $splitComputerLists -Panel2MinSize 160 -DesiredSplitterDistance ([Math]::Max(180, [int](($splitComputerLists.Height - 8) * 0.58))) -Panel1MinSize 180
 
     $btnOwnerHistory.Location = New-Object System.Drawing.Point(($panelWidth - 140), 28)
     $txtName.Width = $editorWidth
@@ -1869,8 +2045,18 @@ $btnExport.Add_Click({ Export-Computers })
 $btnInventoryManager.Add_Click({ Open-InventoryManager })
 $btnColleagueManager.Add_Click({ Open-ColleagueManager })
 $btnOwnerHistory.Add_Click({ Show-OwnerHistory })
-$grid.Add_SelectionChanged({ if ($grid.SelectedRows.Count -gt 0) { Fill-ComputerForm -ComputerId ([string]$grid.SelectedRows[0].Tag) } })
-
+$gridInUse.Add_SelectionChanged({
+    if ($gridInUse.SelectedRows.Count -gt 0) {
+        $gridInventoryMain.ClearSelection()
+        Fill-ComputerForm -ComputerId ([string]$gridInUse.SelectedRows[0].Tag)
+    }
+})
+$gridInventoryMain.Add_SelectionChanged({
+    if ($gridInventoryMain.SelectedRows.Count -gt 0) {
+        $gridInUse.ClearSelection()
+        Fill-ComputerForm -ComputerId ([string]$gridInventoryMain.SelectedRows[0].Tag)
+    }
+})
 $txtOwner.Add_TextChanged({
     if ($script:SuppressOwnerTextChange) { return }
     $selectedOwner = Get-ColleagueById -Id ([string]$script:SelectedOwnerId)
@@ -1887,4 +2073,9 @@ $form.Add_Shown({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSi
 $form.Add_Resize({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSize 420 -DesiredSplitterDistance 950; Update-MainLayout })
 
 [void]$form.ShowDialog()
+
+
+
+
+
 

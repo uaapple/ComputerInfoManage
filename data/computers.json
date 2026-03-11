@@ -72,7 +72,7 @@
                               }
                           ],
         "remark":  "",
-        "updated_at":  "2026-03-11 14:42:32"
+        "updated_at":  "2026-03-12 01:26:56"
     },
     {
         "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
@@ -81,11 +81,31 @@
         "asset_number":  "667001047419",
         "model":  "T14 G2",
         "mac_address":  "3C18A00B7EC8",
-        "owner_id":  "",
+        "owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
         "owner_history":  [
-
+                              {
+                                  "changed_at":  "2026-03-12 01:37:49",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                                  "new_owner_name":  "陈靓"
+                              },
+                              {
+                                  "changed_at":  "2026-03-12 01:45:06",
+                                  "old_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                                  "old_owner_name":  "陈靓",
+                                  "new_owner_id":  "",
+                                  "new_owner_name":  "库存"
+                              },
+                              {
+                                  "changed_at":  "2026-03-12 02:18:38",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                                  "new_owner_name":  "陈靓"
+                              }
                           ],
         "remark":  "",
-        "updated_at":  "2026-03-11 14:41:05"
+        "updated_at":  "2026-03-12 02:18:38"
     }
 ]
