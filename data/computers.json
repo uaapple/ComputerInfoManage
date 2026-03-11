@@ -1,0 +1,91 @@
+﻿[
+    {
+        "id":  "c855a82b-2e74-4d43-b3e8-b2c38ff340c2",
+        "computer_name":  "CND12345",
+        "serial_number":  "CND12345",
+        "asset_number":  "12345",
+        "model":  "G7",
+        "mac_address":  "ABCDEF",
+        "owner_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-10 23:39:49",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "",
+                                  "new_owner_id":  "92211009-35aa-44cc-b8da-62dad6fa424c",
+                                  "new_owner_name":  "管正阳"
+                              },
+                              {
+                                  "changed_at":  "2026-03-11 00:31:00",
+                                  "old_owner_id":  "92211009-35aa-44cc-b8da-62dad6fa424c",
+                                  "old_owner_name":  "管正阳",
+                                  "new_owner_id":  "8ba42483-cb16-41b0-bc3b-c38379838666",
+                                  "new_owner_name":  "李海川"
+                              },
+                              {
+                                  "changed_at":  "2026-03-11 14:42:32",
+                                  "old_owner_id":  "8ba42483-cb16-41b0-bc3b-c38379838666",
+                                  "old_owner_name":  "李海川",
+                                  "new_owner_id":  "",
+                                  "new_owner_name":  "库存"
+                              },
+                              {
+                                  "changed_at":  "2026-03-11 14:58:36",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+                                  "new_owner_name":  "李瑾"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-11 14:58:36"
+    },
+    {
+        "id":  "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+        "computer_name":  "CND12346",
+        "serial_number":  "CND12346",
+        "asset_number":  "12346",
+        "model":  "G8",
+        "mac_address":  "ABCDEF",
+        "owner_id":  "",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-11 00:34:05",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "",
+                                  "new_owner_id":  "92211009-35aa-44cc-b8da-62dad6fa424c",
+                                  "new_owner_name":  "管正阳"
+                              },
+                              {
+                                  "changed_at":  "2026-03-11 01:09:20",
+                                  "old_owner_id":  "92211009-35aa-44cc-b8da-62dad6fa424c",
+                                  "old_owner_name":  "管正阳",
+                                  "new_owner_id":  "8ba42483-cb16-41b0-bc3b-c38379838666",
+                                  "new_owner_name":  "李海川"
+                              },
+                              {
+                                  "changed_at":  "2026-03-11 14:42:32",
+                                  "old_owner_id":  "8ba42483-cb16-41b0-bc3b-c38379838666",
+                                  "old_owner_name":  "李海川",
+                                  "new_owner_id":  "",
+                                  "new_owner_name":  "库存"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-11 14:42:32"
+    },
+    {
+        "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
+        "computer_name":  "PF39FC6D",
+        "serial_number":  "PF39FC6D",
+        "asset_number":  "667001047419",
+        "model":  "T14 G2",
+        "mac_address":  "3C18A00B7EC8",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-11 14:41:05"
+    }
+]
