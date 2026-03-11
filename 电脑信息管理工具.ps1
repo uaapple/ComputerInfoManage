@@ -674,6 +674,28 @@ function Export-Computers {
     $exportRows | Export-Csv -Path $dialog.FileName -NoTypeInformation -Encoding UTF8
     Show-InfoMessage "导出成功：`n$($dialog.FileName)"
 }
+
+function Set-SafeSplitterLayout {
+    param(
+        [Parameter(Mandatory = $true)]$SplitContainer,
+        [int]$Panel2MinSize,
+        [int]$DesiredSplitterDistance,
+        [int]$Panel1MinSize = 120
+    )
+
+    $availableWidth = [int]$SplitContainer.ClientSize.Width
+    if ($availableWidth -le 0) {
+        return
+    }
+
+    $safePanel2Min = [Math]::Min($Panel2MinSize, [Math]::Max(0, $availableWidth - $Panel1MinSize))
+    $SplitContainer.Panel1MinSize = $Panel1MinSize
+    $SplitContainer.Panel2MinSize = $safePanel2Min
+
+    $maxDistance = [Math]::Max($Panel1MinSize, $availableWidth - $safePanel2Min)
+    $safeDistance = [Math]::Max($Panel1MinSize, [Math]::Min($DesiredSplitterDistance, $maxDistance))
+    $SplitContainer.SplitterDistance = $safeDistance
+}
 function Open-InventoryManager {
     $manager = New-Object System.Windows.Forms.Form
     $manager.Text = '库存电脑管理'
@@ -685,8 +707,6 @@ function Open-InventoryManager {
     $split = New-Object System.Windows.Forms.SplitContainer
     $split.Dock = 'Fill'
     $split.FixedPanel = 'Panel2'
-    $split.Panel2MinSize = 420
-    $split.SplitterDistance = 840
     $split.SplitterWidth = 8
     $manager.Controls.Add($split)
 
@@ -1132,8 +1152,8 @@ function Open-InventoryManager {
     $btnDeleteInv.Add_Click({ Remove-InventoryComputer })
     $gridInv.Add_SelectionChanged({ if ($gridInv.SelectedRows.Count -gt 0) { Fill-InventoryForm -ComputerId ([string]$gridInv.SelectedRows[0].Tag) } })
 
-    $manager.Add_Shown({ Refresh-InventoryModelOptions; Refresh-InventoryGrid; Clear-InventoryForm; Update-InventoryLayout })
-    $manager.Add_Resize({ Update-InventoryLayout })
+    $manager.Add_Shown({ Set-SafeSplitterLayout -SplitContainer $split -Panel2MinSize 420 -DesiredSplitterDistance 840; Refresh-InventoryModelOptions; Refresh-InventoryGrid; Clear-InventoryForm; Update-InventoryLayout })
+    $manager.Add_Resize({ Set-SafeSplitterLayout -SplitContainer $split -Panel2MinSize 420 -DesiredSplitterDistance 840; Update-InventoryLayout })
 
     [void]$manager.ShowDialog($form)
     Refresh-ModelOptions
@@ -1151,8 +1171,6 @@ function Open-ColleagueManager {
     $split = New-Object System.Windows.Forms.SplitContainer
     $split.Dock = 'Fill'
     $split.FixedPanel = 'Panel2'
-    $split.Panel2MinSize = 420
-    $split.SplitterDistance = 840
     $split.SplitterWidth = 8
     $manager.Controls.Add($split)
 
@@ -1575,8 +1593,8 @@ function Open-ColleagueManager {
     $btnClearCol.Add_Click({ Clear-ColleagueForm })
     $btnDeleteCol.Add_Click({ Remove-ColleagueRecord })
 
-    $manager.Add_Shown({ Refresh-DepartmentOptions; Refresh-MentorOptions; Refresh-ColleagueGrid; Clear-ColleagueForm; Update-ColleagueLayout })
-    $manager.Add_Resize({ Update-ColleagueLayout })
+    $manager.Add_Shown({ Set-SafeSplitterLayout -SplitContainer $split -Panel2MinSize 420 -DesiredSplitterDistance 840; Refresh-DepartmentOptions; Refresh-MentorOptions; Refresh-ColleagueGrid; Clear-ColleagueForm; Update-ColleagueLayout })
+    $manager.Add_Resize({ Set-SafeSplitterLayout -SplitContainer $split -Panel2MinSize 420 -DesiredSplitterDistance 840; Update-ColleagueLayout })
 
     [void]$manager.ShowDialog($form)
     Refresh-ComputerGrid
@@ -1620,8 +1638,6 @@ $splitMain.Size = New-Object System.Drawing.Size(1460, 720)
 $splitMain.Anchor = 'Top,Bottom,Left,Right'
 $splitMain.FixedPanel = 'Panel2'
 $splitMain.SplitterWidth = 8
-$splitMain.Panel2MinSize = 420
-$splitMain.SplitterDistance = 950
 $form.Controls.Add($splitMain)
 
 $groupList = New-Object System.Windows.Forms.GroupBox
@@ -1867,7 +1883,8 @@ $lstOwnerSuggestions.Add_DoubleClick({ if ($null -ne $lstOwnerSuggestions.Select
 $lstOwnerSuggestions.Add_Click({ if ($null -ne $lstOwnerSuggestions.SelectedItem) { Set-SelectedOwner -Colleague (Get-ColleagueById -Id ([string]$lstOwnerSuggestions.SelectedItem.Id)) } })
 $lstOwnerSuggestions.Add_KeyDown({ param($sender, $e) if ($e.KeyCode -eq [System.Windows.Forms.Keys]::Enter -and $null -ne $lstOwnerSuggestions.SelectedItem) { Set-SelectedOwner -Colleague (Get-ColleagueById -Id ([string]$lstOwnerSuggestions.SelectedItem.Id)); $e.Handled = $true } })
 
-$form.Add_Shown({ Update-MainLayout; Load-AllData; Refresh-ModelOptions; Refresh-ComputerGrid; Clear-ComputerForm })
-$form.Add_Resize({ Update-MainLayout })
+$form.Add_Shown({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSize 420 -DesiredSplitterDistance 950; Update-MainLayout; Load-AllData; Refresh-ModelOptions; Refresh-ComputerGrid; Clear-ComputerForm })
+$form.Add_Resize({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSize 420 -DesiredSplitterDistance 950; Update-MainLayout })
 
 [void]$form.ShowDialog()
+
