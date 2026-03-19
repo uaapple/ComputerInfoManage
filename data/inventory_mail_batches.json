@@ -356,5 +356,273 @@
                           "draft_created_at":  "2026-03-12 03:20:07"
                       }
                   ]
+    },
+    {
+        "id":  "a9d3f02b-6eb9-403d-b28c-10c1a1204553",
+        "created_at":  "2026-03-12 16:04:10",
+        "status":  "draft_created",
+        "recipient_count":  2,
+        "skipped_count":  0,
+        "subject_template":  "[电脑盘点] 请确认您名下电脑信息",
+        "items":  [
+                      {
+                          "colleague_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+                          "display_name":  "李瑾",
+                          "email":  "jing.li@itk-engineering.com",
+                          "computer_ids":  [
+                                               "c855a82b-2e74-4d43-b3e8-b2c38ff340c2"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "c855a82b-2e74-4d43-b3e8-b2c38ff340c2",
+                                                        "computer_name":  "CND12345",
+                                                        "serial_number":  "CND12345",
+                                                        "asset_number":  "12345",
+                                                        "model":  "G7",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-11 14:58:36"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:04:10"
+                      },
+                      {
+                          "colleague_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                          "display_name":  "陈靓",
+                          "email":  "jing.chen@itk-engineering.com",
+                          "computer_ids":  [
+                                               "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                               "b063a220-aeb5-4e2d-82bb-d767a71fed7f"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                                        "computer_name":  "CND12346",
+                                                        "serial_number":  "CND12346",
+                                                        "asset_number":  "12346",
+                                                        "model":  "G8",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 03:16:48"
+                                                    },
+                                                    {
+                                                        "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
+                                                        "computer_name":  "PF39FC6D",
+                                                        "serial_number":  "PF39FC6D",
+                                                        "asset_number":  "667001047419",
+                                                        "model":  "T14 G2",
+                                                        "mac_address":  "3C18A00B7EC8",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 02:18:38"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:04:10"
+                      }
+                  ]
+    },
+    {
+        "id":  "26510c0c-7175-4d21-a7a9-b24fd1d6242b",
+        "created_at":  "2026-03-12 16:04:21",
+        "status":  "draft_created",
+        "recipient_count":  2,
+        "skipped_count":  0,
+        "subject_template":  "[电脑盘点] 请确认您名下电脑信息",
+        "items":  [
+                      {
+                          "colleague_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+                          "display_name":  "李瑾",
+                          "email":  "jing.li@itk-engineering.com",
+                          "computer_ids":  [
+                                               "c855a82b-2e74-4d43-b3e8-b2c38ff340c2"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "c855a82b-2e74-4d43-b3e8-b2c38ff340c2",
+                                                        "computer_name":  "CND12345",
+                                                        "serial_number":  "CND12345",
+                                                        "asset_number":  "12345",
+                                                        "model":  "G7",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-11 14:58:36"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:04:21"
+                      },
+                      {
+                          "colleague_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                          "display_name":  "陈靓",
+                          "email":  "jing.chen@itk-engineering.com",
+                          "computer_ids":  [
+                                               "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                               "b063a220-aeb5-4e2d-82bb-d767a71fed7f"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                                        "computer_name":  "CND12346",
+                                                        "serial_number":  "CND12346",
+                                                        "asset_number":  "12346",
+                                                        "model":  "G8",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 03:16:48"
+                                                    },
+                                                    {
+                                                        "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
+                                                        "computer_name":  "PF39FC6D",
+                                                        "serial_number":  "PF39FC6D",
+                                                        "asset_number":  "667001047419",
+                                                        "model":  "T14 G2",
+                                                        "mac_address":  "3C18A00B7EC8",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 02:18:38"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:04:21"
+                      }
+                  ]
+    },
+    {
+        "id":  "93337e79-4b70-436c-8ecf-11c15ab2b838",
+        "created_at":  "2026-03-12 16:05:04",
+        "status":  "draft_created",
+        "recipient_count":  2,
+        "skipped_count":  0,
+        "subject_template":  "[电脑盘点] 请确认您名下电脑信息",
+        "items":  [
+                      {
+                          "colleague_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+                          "display_name":  "李瑾",
+                          "email":  "jing.li@itk-engineering.com",
+                          "computer_ids":  [
+                                               "c855a82b-2e74-4d43-b3e8-b2c38ff340c2"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "c855a82b-2e74-4d43-b3e8-b2c38ff340c2",
+                                                        "computer_name":  "CND12345",
+                                                        "serial_number":  "CND12345",
+                                                        "asset_number":  "12345",
+                                                        "model":  "G7",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-11 14:58:36"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:05:05"
+                      },
+                      {
+                          "colleague_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                          "display_name":  "陈靓",
+                          "email":  "jing.chen@itk-engineering.com",
+                          "computer_ids":  [
+                                               "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                               "b063a220-aeb5-4e2d-82bb-d767a71fed7f"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                                        "computer_name":  "CND12346",
+                                                        "serial_number":  "CND12346",
+                                                        "asset_number":  "12346",
+                                                        "model":  "G8",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 03:16:48"
+                                                    },
+                                                    {
+                                                        "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
+                                                        "computer_name":  "PF39FC6D",
+                                                        "serial_number":  "PF39FC6D",
+                                                        "asset_number":  "667001047419",
+                                                        "model":  "T14 G2",
+                                                        "mac_address":  "3C18A00B7EC8",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 02:18:38"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:05:05"
+                      }
+                  ]
+    },
+    {
+        "id":  "2ab45833-8c85-4b78-b954-168e64954d21",
+        "created_at":  "2026-03-12 16:18:21",
+        "status":  "draft_created",
+        "recipient_count":  2,
+        "skipped_count":  0,
+        "subject_template":  "[电脑盘点] 请确认您名下电脑信息",
+        "items":  [
+                      {
+                          "colleague_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+                          "display_name":  "李瑾",
+                          "email":  "jing.li@itk-engineering.com",
+                          "computer_ids":  [
+                                               "c855a82b-2e74-4d43-b3e8-b2c38ff340c2"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "c855a82b-2e74-4d43-b3e8-b2c38ff340c2",
+                                                        "computer_name":  "CND12345",
+                                                        "serial_number":  "CND12345",
+                                                        "asset_number":  "12345",
+                                                        "model":  "G7",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-11 14:58:36"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:18:21"
+                      },
+                      {
+                          "colleague_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                          "display_name":  "陈靓",
+                          "email":  "jing.chen@itk-engineering.com",
+                          "computer_ids":  [
+                                               "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                               "b063a220-aeb5-4e2d-82bb-d767a71fed7f"
+                                           ],
+                          "computer_snapshot":  [
+                                                    {
+                                                        "id":  "8c941e4e-f46d-4937-a5dd-50659975bcd6",
+                                                        "computer_name":  "CND12346",
+                                                        "serial_number":  "CND12346",
+                                                        "asset_number":  "12346",
+                                                        "model":  "G8",
+                                                        "mac_address":  "ABCDEF",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 03:16:48"
+                                                    },
+                                                    {
+                                                        "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
+                                                        "computer_name":  "PF39FC6D",
+                                                        "serial_number":  "PF39FC6D",
+                                                        "asset_number":  "667001047419",
+                                                        "model":  "T14 G2",
+                                                        "mac_address":  "3C18A00B7EC8",
+                                                        "remark":  "",
+                                                        "updated_at":  "2026-03-12 02:18:38"
+                                                    }
+                                                ],
+                          "result":  "draft_created",
+                          "result_message":  "已打开默认邮件客户端的撰写窗口。",
+                          "draft_created_at":  "2026-03-12 16:18:21"
+                      }
+                  ]
     }
 ]
