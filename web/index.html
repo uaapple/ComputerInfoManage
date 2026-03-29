@@ -19,13 +19,13 @@
             <p class="subtitle">设备资产、人员与库存电脑管理平台</p>
           </div>
         </div>
+
         <div class="user-panel">
           <div class="user-card">
             <span class="user-label">当前用户</span>
             <strong id="current-user">Admin</strong>
             <span class="role-chip" id="current-role">admin</span>
           </div>
-          <button class="ghost-btn" type="button">退出</button>
         </div>
       </header>
 
@@ -36,26 +36,33 @@
               <p class="section-kicker">总览</p>
               <h2>今日资产概览</h2>
             </div>
-            <div class="header-note">清新蓝白风格 Web 预览版</div>
+            <div class="header-note">Web 版已支持电脑、库存、人员的增删改查</div>
           </div>
           <div class="stats-grid" id="stats-grid"></div>
         </section>
 
-        <section class="content-grid">
+        <section class="workspace-grid">
           <div class="card list-card">
             <div class="section-head section-head-tight">
               <div>
-                <p class="section-kicker">资产列表</p>
-                <h2>首页工作台</h2>
+                <p class="section-kicker">工作台</p>
+                <h2 id="workspace-title">电脑资产列表</h2>
               </div>
-              <div class="toolbar">
-                <div class="search-wrap">
-                  <input id="search-input" type="search" placeholder="搜索电脑、归属人、部门、邮箱..." />
-                </div>
-                <button class="secondary-btn" type="button">导出</button>
-                <button class="secondary-btn" type="button">库存管理</button>
-                <button class="secondary-btn" type="button">人员管理</button>
+              <div class="toolbar toolbar-actions">
+                <button id="add-btn" class="primary-btn" type="button">新增</button>
+                <button id="edit-btn" class="secondary-btn" type="button">编辑</button>
+                <button id="delete-btn" class="secondary-btn danger-btn" type="button">删除</button>
+                <button id="mail-check-btn" class="secondary-btn" type="button">邮件盘点</button>
+                <button id="detail-btn" class="secondary-btn" type="button">查看详情</button>
+                <button id="refresh-btn" class="ghost-btn" type="button">刷新</button>
               </div>
+            </div>
+
+            <div class="toolbar toolbar-search">
+              <div class="search-wrap">
+                <input id="search-input" type="search" placeholder="搜索电脑、归属人、部门、邮箱等信息" />
+              </div>
+              <div class="summary-chip" id="list-summary">加载中</div>
             </div>
 
             <div class="view-tabs">
@@ -72,14 +79,43 @@
             </div>
           </div>
 
-          <aside class="card side-card">
-            <div class="section-head section-head-tight">
-              <div>
-                <p class="section-kicker">近期动态</p>
-                <h2>最新更新</h2>
+          <aside class="side-stack">
+            <section class="card side-card">
+              <div class="section-head section-head-tight">
+                <div>
+                  <p class="section-kicker">详情</p>
+                  <h2 id="detail-panel-title">未选择记录</h2>
+                </div>
               </div>
-            </div>
-            <div id="recent-list" class="recent-list"></div>
+              <div id="detail-panel-content" class="detail-content detail-panel-empty">
+                选择一条记录后，这里会显示详细信息和归属历史。
+              </div>
+            </section>
+
+            <section class="card side-card">
+              <div class="section-head section-head-tight">
+                <div>
+                  <p class="section-kicker">近期动态</p>
+                  <h2>最新更新</h2>
+                </div>
+              </div>
+              <div id="recent-list" class="recent-list"></div>
+            </section>
+
+            <section class="card side-card">
+              <div class="section-head section-head-tight">
+                <div>
+                  <p class="section-kicker">规则提醒</p>
+                  <h2>当前约束</h2>
+                </div>
+              </div>
+              <div class="rule-list">
+                <article class="rule-item">编辑电脑或库存电脑时需要输入授权密码 `1`。</article>
+                <article class="rule-item">实习生必须绑定正式员工 Mentor。</article>
+                <article class="rule-item">删除人员前，必须先解除其作为 Mentor 的引用。</article>
+                <article class="rule-item">删除人员后，其名下电脑会自动转入库存。</article>
+              </div>
+            </section>
           </aside>
         </section>
       </main>
@@ -98,6 +134,48 @@
       </div>
     </dialog>
 
+    <dialog id="editor-modal" class="detail-modal editor-modal">
+      <form id="editor-form" class="detail-shell editor-shell" method="dialog">
+        <div class="detail-head">
+          <div>
+            <p class="section-kicker">编辑</p>
+            <h3 id="editor-title">新增记录</h3>
+          </div>
+          <button id="close-editor" class="ghost-btn" type="button">关闭</button>
+        </div>
+        <div id="editor-alert" class="editor-alert hidden"></div>
+        <div id="editor-fields" class="editor-fields"></div>
+        <div class="editor-actions">
+          <button id="submit-btn" class="primary-btn" type="submit">保存</button>
+          <button id="cancel-editor" class="secondary-btn" type="button">取消</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="mail-modal" class="detail-modal mail-modal">
+      <div class="detail-shell editor-shell">
+        <div class="detail-head">
+          <div>
+            <p class="section-kicker">邮件盘点</p>
+            <h3>选择待发送对象</h3>
+          </div>
+          <button id="close-mail" class="ghost-btn" type="button">关闭</button>
+        </div>
+        <div id="mail-alert" class="editor-alert hidden"></div>
+        <div class="mail-hint" id="mail-hint"></div>
+        <div class="mail-toolbar">
+          <button id="mail-select-all" class="secondary-btn" type="button">全选</button>
+          <button id="mail-clear-all" class="secondary-btn" type="button">取消全选</button>
+        </div>
+        <div id="mail-list" class="mail-list"></div>
+        <div id="mail-skipped" class="mail-skipped"></div>
+        <div class="editor-actions">
+          <button id="mail-generate" class="primary-btn" type="button">确认生成</button>
+          <button id="mail-cancel" class="secondary-btn" type="button">取消</button>
+        </div>
+      </div>
+    </dialog>
+
     <script src="/app.js"></script>
   </body>
-  </html>
+</html>
