@@ -1,12 +1,12 @@
 ﻿[
     {
         "id":  "c855a82b-2e74-4d43-b3e8-b2c38ff340c2",
-        "computer_name":  "CND12345",
-        "serial_number":  "CND12345",
-        "asset_number":  "12345",
-        "model":  "G7",
-        "mac_address":  "ABCDEF",
-        "owner_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+        "computer_name":  "PF39HTCV",
+        "serial_number":  "PF39HTCV",
+        "asset_number":  "667001047550",
+        "model":  "T14",
+        "mac_address":  "404",
+        "owner_id":  "f1f2b290-fac7-4660-9068-91510c5f04b0",
         "owner_history":  [
                               {
                                   "changed_at":  "2026-03-10 23:39:49",
@@ -35,19 +35,26 @@
                                   "old_owner_name":  "库存",
                                   "new_owner_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
                                   "new_owner_name":  "李瑾"
+                              },
+                              {
+                                  "changed_at":  "2026-03-24 08:14:12",
+                                  "old_owner_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+                                  "old_owner_name":  "李瑾",
+                                  "new_owner_id":  "f1f2b290-fac7-4660-9068-91510c5f04b0",
+                                  "new_owner_name":  "钱渊"
                               }
                           ],
         "remark":  "",
-        "updated_at":  "2026-03-11 14:58:36"
+        "updated_at":  "2026-03-24 08:14:12"
     },
     {
         "id":  "8c941e4e-f46d-4937-a5dd-50659975bcd6",
-        "computer_name":  "CND12346",
-        "serial_number":  "CND12346",
-        "asset_number":  "12346",
-        "model":  "G8",
-        "mac_address":  "ABCDEF",
-        "owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+        "computer_name":  "CND14602BD",
+        "serial_number":  "CND14602BD",
+        "asset_number":  "667001047618",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-90-CF-E3",
+        "owner_id":  "13a68d19-6b85-43be-ba1c-6cf404e93ebe",
         "owner_history":  [
                               {
                                   "changed_at":  "2026-03-11 00:34:05",
@@ -76,10 +83,17 @@
                                   "old_owner_name":  "库存",
                                   "new_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
                                   "new_owner_name":  "陈靓"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 02:28:55",
+                                  "old_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                                  "old_owner_name":  "陈靓",
+                                  "new_owner_id":  "13a68d19-6b85-43be-ba1c-6cf404e93ebe",
+                                  "new_owner_name":  "韩滢"
                               }
                           ],
         "remark":  "",
-        "updated_at":  "2026-03-12 03:16:48"
+        "updated_at":  "2026-03-25 02:29:20"
     },
     {
         "id":  "b063a220-aeb5-4e2d-82bb-d767a71fed7f",
@@ -88,7 +102,7 @@
         "asset_number":  "667001047419",
         "model":  "T14 G2",
         "mac_address":  "3C18A00B7EC8",
-        "owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+        "owner_id":  "",
         "owner_history":  [
                               {
                                   "changed_at":  "2026-03-12 01:37:49",
@@ -110,9 +124,1886 @@
                                   "old_owner_name":  "库存",
                                   "new_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
                                   "new_owner_name":  "陈靓"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 06:42:08",
+                                  "old_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                                  "old_owner_name":  "陈靓",
+                                  "new_owner_id":  "",
+                                  "new_owner_name":  "库存"
                               }
                           ],
         "remark":  "",
-        "updated_at":  "2026-03-12 02:18:38"
+        "updated_at":  "2026-03-25 06:42:08"
+    },
+    {
+        "id":  "66f746d0-ad82-4b07-a1c5-341fdc05e802",
+        "computer_name":  "5CG4195116",
+        "serial_number":  "5CG4195116",
+        "asset_number":  "667001045700",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-30-96",
+        "owner_id":  "381bb4d0-ea25-4740-8a63-864c0d49a419",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 05:59:59",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "381bb4d0-ea25-4740-8a63-864c0d49a419",
+                                  "new_owner_name":  "孟晓凤"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 05:59:59"
+    },
+    {
+        "id":  "720f10d8-3a64-4e9a-a020-e05e829a56aa",
+        "computer_name":  "CND1244CVK",
+        "serial_number":  "CND1244CVK",
+        "asset_number":  "667001045701",
+        "model":  "HP Zbook 15 G7",
+        "mac_address":  "50-81-40-33-AD-76",
+        "owner_id":  "5f6ab606-9214-4034-b284-0c0c12c722c7",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 06:53:25",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "5f6ab606-9214-4034-b284-0c0c12c722c7",
+                                  "new_owner_name":  "刘宇"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 06:53:25"
+    },
+    {
+        "id":  "4a6252de-02de-4486-99d2-e21d267cc886",
+        "computer_name":  "WX11P-LAPTOP11",
+        "serial_number":  "WX11P-LAPTOP11",
+        "asset_number":  "667001045703",
+        "model":  "HP Zbook 15 G7",
+        "mac_address":  "50-81-40-33-AD-23",
+        "owner_id":  "576a6c8f-f576-4eb5-aaf0-a84445235662",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:07:26",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "576a6c8f-f576-4eb5-aaf0-a84445235662",
+                                  "new_owner_name":  "王鹏"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:30:26"
+    },
+    {
+        "id":  "8889b652-9f6d-44af-9bd1-c2b306cdac01",
+        "computer_name":  "CND1244CVM",
+        "serial_number":  "CND1244CVM",
+        "asset_number":  "667001045704",
+        "model":  "HP Zbook 15 G7",
+        "mac_address":  "50-81-40-33-AC-EB",
+        "owner_id":  "d8d45add-f45d-45eb-aec3-c49f42da7f3d",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:10:02",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "d8d45add-f45d-45eb-aec3-c49f42da7f3d",
+                                  "new_owner_name":  "杜进军"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:10:02"
+    },
+    {
+        "id":  "7087a050-9e13-4e27-b65e-579bc9cce237",
+        "computer_name":  "CND1244CVL",
+        "serial_number":  "CND1244CVL",
+        "asset_number":  "667001045705",
+        "model":  "HP Zbook 15 G7",
+        "mac_address":  "50-81-40-33-AD-7B",
+        "owner_id":  "4990669c-aa24-4393-a031-dff828cbf5ef",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:12:29",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "4990669c-aa24-4393-a031-dff828cbf5ef",
+                                  "new_owner_name":  "管正阳"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:40:57"
+    },
+    {
+        "id":  "69aff51e-6312-49a4-bfe3-f075882c49b2",
+        "computer_name":  "5CD5417939",
+        "serial_number":  "5CD5417939",
+        "asset_number":  "",
+        "model":  "HP EliteBook 6 G1i 14",
+        "mac_address":  "AC-F4-66-AE-4A-88",
+        "owner_id":  "8bc75626-3435-4550-b9e9-f8489ed82a78",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:14:11",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "8bc75626-3435-4550-b9e9-f8489ed82a78",
+                                  "new_owner_name":  "潘亚"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:02:54"
+    },
+    {
+        "id":  "73c89b9c-6f6b-46ad-a214-e7d8f0375f8f",
+        "computer_name":  "PF2ZYTKG",
+        "serial_number":  "PF2ZYTKG",
+        "asset_number":  "667001045877",
+        "model":  "T14",
+        "mac_address":  "",
+        "owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:17:01",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "eb5cdf57-d1b4-4aef-a804-636275d2d2ca",
+                                  "new_owner_name":  "陈靓"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:25:17"
+    },
+    {
+        "id":  "d9228e66-5021-454c-83f2-9572f6f44255",
+        "computer_name":  "WX11P-LAPTOP03",
+        "serial_number":  "WX11P-LAPTOP03",
+        "asset_number":  "667001045878",
+        "model":  "T14",
+        "mac_address":  "",
+        "owner_id":  "cb4fcf84-922d-4da1-88ad-60b678a07148",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:19:32",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "cb4fcf84-922d-4da1-88ad-60b678a07148",
+                                  "new_owner_name":  "丰阳"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:19:32"
+    },
+    {
+        "id":  "6410333e-8853-4514-90fb-b277c5a2d664",
+        "computer_name":  "PF-2XBVD1",
+        "serial_number":  "PF-2XBVD1",
+        "asset_number":  "667001045879",
+        "model":  "T14",
+        "mac_address":  "",
+        "owner_id":  "a4c5d562-8d7e-4eff-8076-01162b0b418e",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:20:43",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a4c5d562-8d7e-4eff-8076-01162b0b418e",
+                                  "new_owner_name":  "许进"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:20:43"
+    },
+    {
+        "id":  "ac295298-c2aa-4bf0-be6b-49316cb64d37",
+        "computer_name":  "PF39EQEE",
+        "serial_number":  "PF39EQEE",
+        "asset_number":  "667001047416",
+        "model":  "T14 G2",
+        "mac_address":  "404",
+        "owner_id":  "188e6e26-9fff-4ff8-a8d6-2a4f78577a38",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:27:39",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "188e6e26-9fff-4ff8-a8d6-2a4f78577a38",
+                                  "new_owner_name":  "邵秀平"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:27:39"
+    },
+    {
+        "id":  "65e26b23-a7ca-4990-a8de-d0a460ce8f9e",
+        "computer_name":  "PF39F20X",
+        "serial_number":  "PF39F20X",
+        "asset_number":  "667001047417",
+        "model":  "T14 G2",
+        "mac_address":  "F4-A4-75-A4-E0-52",
+        "owner_id":  "14802ebc-c0c8-4313-a5cc-476e700a2ffb",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:28:34",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "14802ebc-c0c8-4313-a5cc-476e700a2ffb",
+                                  "new_owner_name":  "王鹏"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:28:34"
+    },
+    {
+        "id":  "a445ef7e-26e0-4c00-ae88-b332c77cffd4",
+        "computer_name":  "PF39HR5B",
+        "serial_number":  "PF39HR5B",
+        "asset_number":  "667001047418",
+        "model":  "T14 G2",
+        "mac_address":  "404",
+        "owner_id":  "271e00d0-2c8f-4644-bd31-bcdaf96a5bf0",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:29:51",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "271e00d0-2c8f-4644-bd31-bcdaf96a5bf0",
+                                  "new_owner_name":  "茅矛"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:29:51"
+    },
+    {
+        "id":  "ee783892-69eb-4d34-b892-1830d2897fc2",
+        "computer_name":  "CND1460266",
+        "serial_number":  "CND1460266",
+        "asset_number":  "667001047421",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-DA-75-B3",
+        "owner_id":  "13a68d19-6b85-43be-ba1c-6cf404e93ebe",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 07:30:56",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "13a68d19-6b85-43be-ba1c-6cf404e93ebe",
+                                  "new_owner_name":  "韩滢"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 07:30:56"
+    },
+    {
+        "id":  "89830aff-5cc5-4f66-85a5-6db05bf210b2",
+        "computer_name":  "CND146027N",
+        "serial_number":  "CND146027N",
+        "asset_number":  "667001047422",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "56-14-F3-4F-1A-73",
+        "owner_id":  "637aa48e-b30b-4fc9-9075-2a8f1708866c",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 08:11:09",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "637aa48e-b30b-4fc9-9075-2a8f1708866c",
+                                  "new_owner_name":  "胡川"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 08:11:09"
+    },
+    {
+        "id":  "837ad6e0-aff9-4dbb-a152-cdf4a07c4ec1",
+        "computer_name":  "PF4A8MAL",
+        "serial_number":  "PF4A8MAL",
+        "asset_number":  "667001047548",
+        "model":  "T14 G3",
+        "mac_address":  "E8-80-88-D3-0E-37",
+        "owner_id":  "63a46fcd-2b21-4d13-b72f-8dfb43bd1631",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 08:12:25",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a4c5d562-8d7e-4eff-8076-01162b0b418e",
+                                  "new_owner_name":  "许进"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 14:54:02",
+                                  "old_owner_id":  "a4c5d562-8d7e-4eff-8076-01162b0b418e",
+                                  "old_owner_name":  "许进",
+                                  "new_owner_id":  "63a46fcd-2b21-4d13-b72f-8dfb43bd1631",
+                                  "new_owner_name":  "Aaron Xu"
+                              }
+                          ],
+        "remark":  "xu aaron 计划4/30 离职",
+        "updated_at":  "2026-03-25 14:54:02"
+    },
+    {
+        "id":  "ab21ff04-f44c-4768-b7ca-32cca75efc8e",
+        "computer_name":  "PF39HWJL",
+        "serial_number":  "PF39HWJL",
+        "asset_number":  "667001047549",
+        "model":  "T14 G2",
+        "mac_address":  "404",
+        "owner_id":  "b0433a9b-91fa-43c0-9085-3b8c6c5e2d7c",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 08:13:24",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "b0433a9b-91fa-43c0-9085-3b8c6c5e2d7c",
+                                  "new_owner_name":  "李霜"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 08:13:24"
+    },
+    {
+        "id":  "38be3253-ab77-4d42-9688-6f4631ea1991",
+        "computer_name":  "PF39HNSA",
+        "serial_number":  "PF39HNSA",
+        "asset_number":  "667001047551",
+        "model":  "T14 G2",
+        "mac_address":  "404",
+        "owner_id":  "7633d92e-d951-4639-b4a3-8ffe3467b95c",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 08:19:55",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "7633d92e-d951-4639-b4a3-8ffe3467b95c",
+                                  "new_owner_name":  "朱永明"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 08:19:55"
+    },
+    {
+        "id":  "1a928137-b1a5-40db-b16b-8d9b8025bcd2",
+        "computer_name":  "CND1422Q4L",
+        "serial_number":  "CND1422Q4L",
+        "asset_number":  "667001047614",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "E0-70-EA-F3-B8-16",
+        "owner_id":  "d67c5c19-5495-4d27-8051-f5d662fdc420",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-24 08:22:07",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "d67c5c19-5495-4d27-8051-f5d662fdc420",
+                                  "new_owner_name":  "徐莹"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-24 08:22:07"
+    },
+    {
+        "id":  "32ccaf4e-9254-4e4f-b736-33d0503745de",
+        "computer_name":  "CND1422Q6D",
+        "serial_number":  "CND1422Q6D",
+        "asset_number":  "667001047617",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "E0-70-EA-F3-B6-93",
+        "owner_id":  "a897b854-6691-4e73-83a1-b9fa41d60acf",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:28:06",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a897b854-6691-4e73-83a1-b9fa41d60acf",
+                                  "new_owner_name":  "王冠"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 02:28:06"
+    },
+    {
+        "id":  "e556a604-0441-4be9-8026-8c8b55e83bc1",
+        "computer_name":  "CND14602DR",
+        "serial_number":  "CND14602DR",
+        "asset_number":  "667001047619",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "84-69-93-CC-2D-12",
+        "owner_id":  "47c61174-1ab9-4ca2-b655-5e0b609c4e4c",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:31:28",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "47c61174-1ab9-4ca2-b655-5e0b609c4e4c",
+                                  "new_owner_name":  "马志祥"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 02:31:28"
+    },
+    {
+        "id":  "c95da9a4-3538-438c-9bf4-1f0587c1517c",
+        "computer_name":  "CND146024G",
+        "serial_number":  "CND146024G",
+        "asset_number":  "667001047620",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-D9-CA-B6",
+        "owner_id":  "752813bf-cb94-4f60-9d3b-585440a1c52e",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:32:29",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "752813bf-cb94-4f60-9d3b-585440a1c52e",
+                                  "new_owner_name":  "葛云龙"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 02:32:29"
+    },
+    {
+        "id":  "4f8de37c-6b9a-49c5-9008-23f21cb3b5d5",
+        "computer_name":  "CND14602D2",
+        "serial_number":  "CND14602D2",
+        "asset_number":  "932000000000",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-DA-7C-BC",
+        "owner_id":  "1b75dfaf-bf88-433e-a62c-0988ded9e255",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:33:07",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "1b75dfaf-bf88-433e-a62c-0988ded9e255",
+                                  "new_owner_name":  "李帅"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 02:33:07"
+    },
+    {
+        "id":  "66d4b95f-017d-4478-9bbe-000ee6db6549",
+        "computer_name":  "CND315276J",
+        "serial_number":  "CND315276J",
+        "asset_number":  "932000000003",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "98-59-7A-76-2F-C3",
+        "owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:34:37",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+                                  "new_owner_name":  "陈琪"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 03:41:50",
+                                  "old_owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+                                  "old_owner_name":  "陈琪",
+                                  "new_owner_id":  "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+                                  "new_owner_name":  "陈妤"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 04:36:05",
+                                  "old_owner_id":  "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+                                  "old_owner_name":  "陈妤",
+                                  "new_owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+                                  "new_owner_name":  "陈哲"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:31:35"
+    },
+    {
+        "id":  "f388f47f-e6c3-492d-9417-873609354243",
+        "computer_name":  "5CG4195115",
+        "serial_number":  "5CG4195115",
+        "asset_number":  "932000000070",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-71-D8",
+        "owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:35:35",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+                                  "new_owner_name":  "陈琪"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 03:41:35",
+                                  "old_owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+                                  "old_owner_name":  "陈琪",
+                                  "new_owner_id":  "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+                                  "new_owner_name":  "陈妤"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 04:35:44",
+                                  "old_owner_id":  "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+                                  "old_owner_name":  "陈妤",
+                                  "new_owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+                                  "new_owner_name":  "陈哲"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:18:35"
+    },
+    {
+        "id":  "f3a86bf3-5706-457f-8082-9f8fc0dc2b7f",
+        "computer_name":  "CND315276M",
+        "serial_number":  "CND315276M",
+        "asset_number":  "932000000007",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "404",
+        "owner_id":  "2ba96a9d-856b-4feb-8464-d28ddaac157e",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:56:25",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "2ba96a9d-856b-4feb-8464-d28ddaac157e",
+                                  "new_owner_name":  "黎瀚文"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 02:56:25"
+    },
+    {
+        "id":  "c2118bb4-f7bc-435e-b40e-e10d096cbd86",
+        "computer_name":  "CND315276K",
+        "serial_number":  "CND315276K",
+        "asset_number":  "932000000008",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C-4D-8F-B8-E0-E2",
+        "owner_id":  "d8d45add-f45d-45eb-aec3-c49f42da7f3d",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:57:10",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "d8d45add-f45d-45eb-aec3-c49f42da7f3d",
+                                  "new_owner_name":  "杜进军"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 02:57:10"
+    },
+    {
+        "id":  "9205d6cf-f925-47b9-8bd4-cd2cf531e94a",
+        "computer_name":  "CND315276H",
+        "serial_number":  "CND315276H",
+        "asset_number":  "932000000009",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C-4D-8F-B8-E0-E9",
+        "owner_id":  "20a92163-dd95-45ab-b8cb-7097ec7923a6",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 02:58:44",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "20a92163-dd95-45ab-b8cb-7097ec7923a6",
+                                  "new_owner_name":  "汪文兵"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:31:05"
+    },
+    {
+        "id":  "a2a3c9c1-bd8a-4e69-aaf3-7bc6a9dee068",
+        "computer_name":  "CND24519ZB",
+        "serial_number":  "CND24519ZB",
+        "asset_number":  "932000000033",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-52-95",
+        "owner_id":  "c53f69a8-161c-44c9-8043-0237e53c9ea8",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:00:05",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "c53f69a8-161c-44c9-8043-0237e53c9ea8",
+                                  "new_owner_name":  "张福明"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:00:05"
+    },
+    {
+        "id":  "5f3cf35e-c2f9-457e-9b6e-7ed7781f9b60",
+        "computer_name":  "CND24519Z3",
+        "serial_number":  "CND24519Z3",
+        "asset_number":  "932000000034",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-52-93",
+        "owner_id":  "69de8bee-9f42-4c47-81b1-177a82f94eda",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:01:53",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "69de8bee-9f42-4c47-81b1-177a82f94eda",
+                                  "new_owner_name":  "刘宇航"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:01:53"
+    },
+    {
+        "id":  "a34c12a8-1610-4338-81ae-63691381d19c",
+        "computer_name":  "CND24519Z4",
+        "serial_number":  "CND24519Z4",
+        "asset_number":  "932000000035",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-55-3B",
+        "owner_id":  "75cf0590-9cc7-4a5b-8bb7-20bdd8dcf668",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:03:03",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "75cf0590-9cc7-4a5b-8bb7-20bdd8dcf668",
+                                  "new_owner_name":  "刘旭"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:03:03"
+    },
+    {
+        "id":  "6a5f11c9-0bdb-44c7-b426-1eca90836ed9",
+        "computer_name":  "CND315276C",
+        "serial_number":  "CND315276C",
+        "asset_number":  "932000000036",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "",
+        "owner_id":  "5d25e338-2be3-440c-82ed-5a31d6fa859d",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:03:55",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "5d25e338-2be3-440c-82ed-5a31d6fa859d",
+                                  "new_owner_name":  "张宇翔"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-26 10:19:28"
+    },
+    {
+        "id":  "e746d512-954d-4cd4-bc34-9798d7be9f5c",
+        "computer_name":  "CND315276D",
+        "serial_number":  "CND315276D",
+        "asset_number":  "932000000037",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C-4D-8F-B8-DF-53",
+        "owner_id":  "7d45d72b-00e0-47b6-93e0-b2f3959db6c4",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:04:28",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "7d45d72b-00e0-47b6-93e0-b2f3959db6c4",
+                                  "new_owner_name":  "蒲宏宇"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:04:28"
+    },
+    {
+        "id":  "d3658887-902d-4d67-8894-e0e8aef93608",
+        "computer_name":  "CND3151PM8",
+        "serial_number":  "CND3151PM8",
+        "asset_number":  "932000000041",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C-4D-8F-B6-BE-1D",
+        "owner_id":  "a4c5d562-8d7e-4eff-8076-01162b0b418e",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:05:10",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a4c5d562-8d7e-4eff-8076-01162b0b418e",
+                                  "new_owner_name":  "许进"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:05:10"
+    },
+    {
+        "id":  "6770b2fe-de8c-45b3-960d-40e589e8b15b",
+        "computer_name":  "PF4A7B85",
+        "serial_number":  "PF4A7B85",
+        "asset_number":  "932000000051",
+        "model":  "T14 G3",
+        "mac_address":  "404",
+        "owner_id":  "cf083ee2-04e8-4774-9d79-23015364c07f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:05:51",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "cf083ee2-04e8-4774-9d79-23015364c07f",
+                                  "new_owner_name":  "夏逸磊"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:13:27"
+    },
+    {
+        "id":  "db610198-d799-41f2-9276-9689b709e2dc",
+        "computer_name":  "5CG4213C72",
+        "serial_number":  "5CG4213C72",
+        "asset_number":  "932000000054",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-1A-19",
+        "owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:15:44",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+                                  "new_owner_name":  "鲁博洋"
+                              }
+                          ],
+        "remark":  "Michael\tLu",
+        "updated_at":  "2026-03-25 03:15:44"
+    },
+    {
+        "id":  "52f34900-5f18-47bd-b5ef-589ebd5a287c",
+        "computer_name":  "5CG40600ZJ",
+        "serial_number":  "5CG40600ZJ",
+        "asset_number":  "932000000059",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "2C-58-B9-70-10-50",
+        "owner_id":  "c05b9498-9282-40c6-92d7-667a253ceffd",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:17:18",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "c05b9498-9282-40c6-92d7-667a253ceffd",
+                                  "new_owner_name":  "毛冲冲"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:17:18"
+    },
+    {
+        "id":  "850b0cc8-cf44-4100-9f0f-67ed48653674",
+        "computer_name":  "5CG4195119",
+        "serial_number":  "5CG4195119",
+        "asset_number":  "932000000061",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "DC-97-BA-0D-EE-04",
+        "owner_id":  "6a19bc07-a90d-4c9d-adab-72609e82a608",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:18:11",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "6a19bc07-a90d-4c9d-adab-72609e82a608",
+                                  "new_owner_name":  "张腾"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:18:11"
+    },
+    {
+        "id":  "bf2814e8-6123-4815-9531-9abc475bc262",
+        "computer_name":  "5CG4061P2C",
+        "serial_number":  "5CG4061P2C",
+        "asset_number":  "932000000062",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "2C-58-B9-B2-00-D9",
+        "owner_id":  "e0efa86a-f12e-4812-951d-ccabbdeec696",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:18:51",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "e0efa86a-f12e-4812-951d-ccabbdeec696",
+                                  "new_owner_name":  "李海川"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:18:51"
+    },
+    {
+        "id":  "29ab3dad-ad76-46a0-9e8f-b195f01acfd2",
+        "computer_name":  "5CG4061P29",
+        "serial_number":  "5CG4061P29",
+        "asset_number":  "932000000063",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "2C-58-B9-70-8F-18",
+        "owner_id":  "e904e21d-e355-4683-81a8-fbd934a96793",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:19:24",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "e904e21d-e355-4683-81a8-fbd934a96793",
+                                  "new_owner_name":  "周思远"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:19:24"
+    },
+    {
+        "id":  "e91101ae-d9fc-469e-a85b-c8b144841d7d",
+        "computer_name":  "5CG4213C71",
+        "serial_number":  "5CG4213C71",
+        "asset_number":  "932000000064",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-1A-51",
+        "owner_id":  "08eef979-e3a5-4ea9-b513-ed19886b9766",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:20:02",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "08eef979-e3a5-4ea9-b513-ed19886b9766",
+                                  "new_owner_name":  "汪昊"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:20:02"
+    },
+    {
+        "id":  "7af61ae2-f1b0-4859-b4e2-44fa07c8fc0f",
+        "computer_name":  "PF54BLCA",
+        "serial_number":  "PF54BLCA",
+        "asset_number":  "667001070952",
+        "model":  "Thinkpad T14 G4 （非触控）",
+        "mac_address":  "404",
+        "owner_id":  "7633d92e-d951-4639-b4a3-8ffe3467b95c",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:20:37",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "7633d92e-d951-4639-b4a3-8ffe3467b95c",
+                                  "new_owner_name":  "朱永明"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:20:37"
+    },
+    {
+        "id":  "943d0019-96f9-426d-b66a-9a6c091b98cb",
+        "computer_name":  "5CG4061P2B",
+        "serial_number":  "5CG4061P2B",
+        "asset_number":  "932000000053",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "2C-58-B9-B2-00-C7",
+        "owner_id":  "a601b4e1-e31b-4903-a633-d011f22435f3",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:29:02",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a601b4e1-e31b-4903-a633-d011f22435f3",
+                                  "new_owner_name":  "王志永"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:29:02"
+    },
+    {
+        "id":  "b95a9622-62a1-4dfb-a60f-003b96b38c4e",
+        "computer_name":  "5CG4195117",
+        "serial_number":  "5CG4195117",
+        "asset_number":  "932000000055",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-71-C2",
+        "owner_id":  "4e34c4c7-fc1f-4f47-845a-724dd1c944b7",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:29:39",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "4e34c4c7-fc1f-4f47-845a-724dd1c944b7",
+                                  "new_owner_name":  "偰润"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:29:39"
+    },
+    {
+        "id":  "1acb73b2-62f6-4a1b-9b0a-1e7bfcc7c4f1",
+        "computer_name":  "5CG4195118",
+        "serial_number":  "5CG4195118",
+        "asset_number":  "932000000052",
+        "model":  "HP ZBook Fury 15 G10",
+        "mac_address":  "30-13-8B-E7-81-17",
+        "owner_id":  "0e78427b-97ff-4a72-9088-8baffe014987",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:33:40",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "0e78427b-97ff-4a72-9088-8baffe014987",
+                                  "new_owner_name":  "易立"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:33:40"
+    },
+    {
+        "id":  "7cf879ba-5229-4677-9396-7c06aa6f296e",
+        "computer_name":  "5CG4213C70",
+        "serial_number":  "5CG4213C70",
+        "asset_number":  "932000000066",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-1A-DF",
+        "owner_id":  "d67c5c19-5495-4d27-8051-f5d662fdc420",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:34:19",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "d67c5c19-5495-4d27-8051-f5d662fdc420",
+                                  "new_owner_name":  "徐莹"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:34:19"
+    },
+    {
+        "id":  "a340edbf-70c9-4890-85b1-8319f7687c55",
+        "computer_name":  "5CG4213C74",
+        "serial_number":  "5CG4213C74",
+        "asset_number":  "932000000068",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-1A-47",
+        "owner_id":  "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:35:55",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+                                  "new_owner_name":  "陈妤"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:35:55"
+    },
+    {
+        "id":  "068a15b3-4506-44f4-b8f5-76c7358af529",
+        "computer_name":  "5CG5232386",
+        "serial_number":  "5CG5232386",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "24-FB-E3-F5-14-91",
+        "owner_id":  "381bb4d0-ea25-4740-8a63-864c0d49a419",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:36:32",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "381bb4d0-ea25-4740-8a63-864c0d49a419",
+                                  "new_owner_name":  "孟晓凤"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:03:08"
+    },
+    {
+        "id":  "24d3d842-9420-41a7-afb1-706eba98d53e",
+        "computer_name":  "CND1422Q5R",
+        "serial_number":  "CND1422Q5R",
+        "asset_number":  "667001047615",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-C-F4-13-AD4",
+        "owner_id":  "a1e336e9-5997-4a4e-91c5-e2fc046df150",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:40:05",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a1e336e9-5997-4a4e-91c5-e2fc046df150",
+                                  "new_owner_name":  "谭子航"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:40:05"
+    },
+    {
+        "id":  "d2f53bf0-6b48-4eb1-af42-db1777719a6e",
+        "computer_name":  "CND24519Z6",
+        "serial_number":  "CND24519Z6",
+        "asset_number":  "932000000040",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-54-DC",
+        "owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:41:00",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+                                  "new_owner_name":  "陈琪"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:41:00"
+    },
+    {
+        "id":  "93da6ea8-4fb2-4ea6-94b0-937d53b2e179",
+        "computer_name":  "CND1460251",
+        "serial_number":  "CND1460251",
+        "asset_number":  "667001047613",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C-4D-8F-FC-E1-4A",
+        "owner_id":  "fd48322c-f2f1-4fe3-af9b-9698ef392bf7",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:44:15",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "fd48322c-f2f1-4fe3-af9b-9698ef392bf7",
+                                  "new_owner_name":  "姚进峰"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:44:15"
+    },
+    {
+        "id":  "37db72fb-8a80-47ae-bfda-637932df0f64",
+        "computer_name":  "5CD51868Y1",
+        "serial_number":  "5CD51868Y1",
+        "asset_number":  "",
+        "model":  "HP Elitebook 640 G11",
+        "mac_address":  "10-B6-76-89-1D-98",
+        "owner_id":  "a01e2e59-f717-4d6e-9022-84cc36e7ffab",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:48:00",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a01e2e59-f717-4d6e-9022-84cc36e7ffab",
+                                  "new_owner_name":  "钟超"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:52:08"
+    },
+    {
+        "id":  "28139771-f45e-4da7-b1f2-fae1bf8f2566",
+        "computer_name":  "CND24519Z2",
+        "serial_number":  "CND24519Z2",
+        "asset_number":  "932000000032",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "5C-60-BA-E9-6B-19",
+        "owner_id":  "2be6fcf9-28ba-4f2c-9168-6b2e2d505781",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:48:45",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "2be6fcf9-28ba-4f2c-9168-6b2e2d505781",
+                                  "new_owner_name":  "冯海峰"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:48:45"
+    },
+    {
+        "id":  "d7695f5c-f343-4ab4-b26d-39db35808332",
+        "computer_name":  "CND14602F7",
+        "serial_number":  "CND14602F7",
+        "asset_number":  "667001047420",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-90-D0-01",
+        "owner_id":  "be2e2823-d349-43d6-b03e-c7d25678cd09",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:49:31",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "be2e2823-d349-43d6-b03e-c7d25678cd09",
+                                  "new_owner_name":  "何涛"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:49:31"
+    },
+    {
+        "id":  "2b3695e5-a8f7-4f8c-83c5-5fee04d8aa5d",
+        "computer_name":  "CND1460273",
+        "serial_number":  "CND1460273",
+        "asset_number":  "932000000001",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-DA-76-BC",
+        "owner_id":  "6a2040ca-b091-4356-857b-f0c37da9550a",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:57:00",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "6a2040ca-b091-4356-857b-f0c37da9550a",
+                                  "new_owner_name":  "吴强"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:57:00"
+    },
+    {
+        "id":  "72fa125d-dc1a-4a7d-8e51-69eb79a29f53",
+        "computer_name":  "5CG5232388",
+        "serial_number":  "5CG5232388",
+        "asset_number":  "932000000081",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "24-FB-E3-F5-E3-B9",
+        "owner_id":  "d4028b01-4464-4c06-8fd2-44509b91de40",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 03:57:33",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "d4028b01-4464-4c06-8fd2-44509b91de40",
+                                  "new_owner_name":  "吴忠卫"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 03:57:33"
+    },
+    {
+        "id":  "8b58ea42-7e71-4040-b896-e72a587de86b",
+        "computer_name":  "R912XGN5",
+        "serial_number":  "R912XGN5",
+        "asset_number":  "667001045875",
+        "model":  "Thinkpad X13",
+        "mac_address":  "404",
+        "owner_id":  "8bc75626-3435-4550-b9e9-f8489ed82a78",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:00:30",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "8bc75626-3435-4550-b9e9-f8489ed82a78",
+                                  "new_owner_name":  "潘亚"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 04:00:30"
+    },
+    {
+        "id":  "ade67ab6-1598-4667-8ce4-a92c67be0f44",
+        "computer_name":  "5CG5430JJW",
+        "serial_number":  "5CG5430JJW",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "4C:CF:7C:DC:78:E3",
+        "owner_id":  "5f6ab606-9214-4034-b284-0c0c12c722c7",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:05:33",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "5f6ab606-9214-4034-b284-0c0c12c722c7",
+                                  "new_owner_name":  "刘宇"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:23:24"
+    },
+    {
+        "id":  "cf98f28e-0c5d-4dcc-a1c3-00e1259379b9",
+        "computer_name":  "5CG5430JJS",
+        "serial_number":  "5CG5430JJS",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "4C-CF-7C-DC-88-12",
+        "owner_id":  "d8d45add-f45d-45eb-aec3-c49f42da7f3d",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:06:09",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "d8d45add-f45d-45eb-aec3-c49f42da7f3d",
+                                  "new_owner_name":  "杜进军"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:24:32"
+    },
+    {
+        "id":  "1a6ee8e9-3bba-42e8-a0c0-2d7581654234",
+        "computer_name":  "5CG5232385",
+        "serial_number":  "5CG5232385",
+        "asset_number":  "932000000082",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "",
+        "owner_id":  "a32fd109-b12b-4a47-97d4-22ea7e2a8984",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:14:33",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a32fd109-b12b-4a47-97d4-22ea7e2a8984",
+                                  "new_owner_name":  "陶孝飞"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:07:48"
+    },
+    {
+        "id":  "27f2d7b2-fde8-49d3-b648-89fd2163b514",
+        "computer_name":  "5CG5232389",
+        "serial_number":  "5CG5232389",
+        "asset_number":  "932000000083",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "",
+        "owner_id":  "a32fd109-b12b-4a47-97d4-22ea7e2a8984",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:14:54",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a32fd109-b12b-4a47-97d4-22ea7e2a8984",
+                                  "new_owner_name":  "陶孝飞"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:12:46"
+    },
+    {
+        "id":  "27124d2a-8161-4c60-a398-d66f0eab3ce5",
+        "computer_name":  "5CG5430JJX",
+        "serial_number":  "5CG5430JJX",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "4C:CF:7C:DC:78:DD",
+        "owner_id":  "11633aac-23b4-4a76-9526-ee89bd456f4e",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:15:57",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "cf083ee2-04e8-4774-9d79-23015364c07f",
+                                  "new_owner_name":  "夏逸磊"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:10:39",
+                                  "old_owner_id":  "cf083ee2-04e8-4774-9d79-23015364c07f",
+                                  "old_owner_name":  "夏逸磊",
+                                  "new_owner_id":  "11633aac-23b4-4a76-9526-ee89bd456f4e",
+                                  "new_owner_name":  "雷杰"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:24:44"
+    },
+    {
+        "id":  "2af7b836-737c-48c2-98e0-41a45887e3c5",
+        "computer_name":  "5CG5430JJZ",
+        "serial_number":  "5CG5430JJZ",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "4C:CF:7C:DC:4C:C2",
+        "owner_id":  "4ef340d7-ee80-474d-b058-51137851611a",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:18:09",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "4ef340d7-ee80-474d-b058-51137851611a",
+                                  "new_owner_name":  "韩志伟"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:23:54"
+    },
+    {
+        "id":  "0d0b3b48-fbb1-4ac9-b442-8577e9eed95d",
+        "computer_name":  "5CG5430JJV",
+        "serial_number":  "5CG5430JJV",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "4C:CF:7C:DC:08:A5",
+        "owner_id":  "a3063947-a8cc-4873-9ec4-e851590695c6",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:18:42",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a3063947-a8cc-4873-9ec4-e851590695c6",
+                                  "new_owner_name":  "吴量"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:13:42"
+    },
+    {
+        "id":  "2bfda6ec-6cb7-41f6-b6b2-de862d8343a7",
+        "computer_name":  "5CG4061P28",
+        "serial_number":  "5CG4061P28",
+        "asset_number":  "932000000065",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "2C-58-B9-B2-10-5B",
+        "owner_id":  "e0efa86a-f12e-4812-951d-ccabbdeec696",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:19:18",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "e0efa86a-f12e-4812-951d-ccabbdeec696",
+                                  "new_owner_name":  "李海川"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 04:19:18"
+    },
+    {
+        "id":  "fabedad5-16c8-411e-b6e1-4f1c1f451978",
+        "computer_name":  "5CG4061P27",
+        "serial_number":  "5CG4061P27",
+        "asset_number":  "932000000057",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "00-05-9A-3C-7A-00",
+        "owner_id":  "9e529e8a-839a-42cd-8b51-a948cb17dace",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:20:32",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "9e529e8a-839a-42cd-8b51-a948cb17dace",
+                                  "new_owner_name":  "张运卓"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 04:20:32"
+    },
+    {
+        "id":  "2dafaa4c-7d3e-4c8e-b3c8-50bd09638de9",
+        "computer_name":  "CND315276N",
+        "serial_number":  "CND315276N",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C4D8FB8E110",
+        "owner_id":  "69de8bee-9f42-4c47-81b1-177a82f94eda",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:21:09",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "3f75369f-00a2-424b-802d-e0b661c1686f",
+                                  "new_owner_name":  "陶家齐"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 04:21:42",
+                                  "old_owner_id":  "3f75369f-00a2-424b-802d-e0b661c1686f",
+                                  "old_owner_name":  "陶家齐",
+                                  "new_owner_id":  "69de8bee-9f42-4c47-81b1-177a82f94eda",
+                                  "new_owner_name":  "刘宇航"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:13:26"
+    },
+    {
+        "id":  "ba66620c-51a1-41ff-be02-9e4918a5d72d",
+        "computer_name":  "CND3151PMC",
+        "serial_number":  "CND3151PMC",
+        "asset_number":  "932000000039",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C-4D-8F-B6-BC-65",
+        "owner_id":  "3f75369f-00a2-424b-802d-e0b661c1686f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:22:33",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "3f75369f-00a2-424b-802d-e0b661c1686f",
+                                  "new_owner_name":  "陶家齐"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 04:22:33"
+    },
+    {
+        "id":  "904e7257-f26e-4d05-849f-a7a5c67e1b9e",
+        "computer_name":  "CND24519Z5",
+        "serial_number":  "CND24519Z5",
+        "asset_number":  "932000000038",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-53-58",
+        "owner_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:23:04",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
+                                  "new_owner_name":  "李瑾"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 04:23:04"
+    },
+    {
+        "id":  "6a534df7-68b2-4ec1-9d83-7050a9f7ffff",
+        "computer_name":  "5CG5430JK0",
+        "serial_number":  "5CG5430JK0",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "4C:CF:7C:DC:4C:9B",
+        "owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:23:36",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+                                  "new_owner_name":  "陈哲"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:24:01"
+    },
+    {
+        "id":  "480bade1-d08d-42e9-8a58-d08522b75c0c",
+        "computer_name":  "CND146028C",
+        "serial_number":  "CND146028C",
+        "asset_number":  "667001047616",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "404",
+        "owner_id":  "1b75dfaf-bf88-433e-a62c-0988ded9e255",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:25:12",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "1b75dfaf-bf88-433e-a62c-0988ded9e255",
+                                  "new_owner_name":  "李帅"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 04:25:12"
+    },
+    {
+        "id":  "74b19657-929e-46d7-a850-598aa9a09ffe",
+        "computer_name":  "CND1422Q6H",
+        "serial_number":  "CND1422Q6H",
+        "asset_number":  "667001047611",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-41-3A-70",
+        "owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:26:04",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "5f6ab606-9214-4034-b284-0c0c12c722c7",
+                                  "new_owner_name":  "刘宇"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:21:34",
+                                  "old_owner_id":  "5f6ab606-9214-4034-b284-0c0c12c722c7",
+                                  "old_owner_name":  "刘宇",
+                                  "new_owner_id":  "",
+                                  "new_owner_name":  "库存"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:28:24",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "b3300917-4550-464e-9233-e10105b386af",
+                                  "new_owner_name":  "陈哲"
+                              }
+                          ],
+        "remark":  "Liu Zheyuan 离职转入库存，电脑在陈哲处",
+        "updated_at":  "2026-03-25 15:28:24"
+    },
+    {
+        "id":  "8197e220-2ca0-4ed9-abfc-cb7e749ccd52",
+        "computer_name":  "5CG4213C73",
+        "serial_number":  "5CG4213C73",
+        "asset_number":  "932000000067",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "30-13-8B-E7-1A-6F",
+        "owner_id":  "624d3e7c-41f3-4cce-93bc-ad1edd45211e",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:30:03",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "624d3e7c-41f3-4cce-93bc-ad1edd45211e",
+                                  "new_owner_name":  "汪桐桐"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 04:30:03"
+    },
+    {
+        "id":  "87ce8273-05db-44f2-acc0-b4438429fca8",
+        "computer_name":  "5CG5430JJY",
+        "serial_number":  "5CG5430JJY",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "4C-CF-7C-DC-78-F9",
+        "owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:30:41",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+                                  "new_owner_name":  "鲁博洋"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:23:44"
+    },
+    {
+        "id":  "54a47e13-9d94-4a0a-a008-c14b322e81ae",
+        "computer_name":  "5CD5417938",
+        "serial_number":  "5CD5417938",
+        "asset_number":  "",
+        "model":  "HP EliteBook 6 G1i 14",
+        "mac_address":  "AC-F4-66-AE-4A-93",
+        "owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 04:31:11",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "2e3cd3b8-91ae-4b76-ac46-84785f445e3f",
+                                  "new_owner_name":  "陈琪"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:02:47"
+    },
+    {
+        "id":  "38b0280e-3bea-42b3-a23a-2f1f210a9f06",
+        "computer_name":  "5CG4061P2G",
+        "serial_number":  "5CG4061P2G",
+        "asset_number":  "932000000056",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "2C-58-B9-B2-00-CF",
+        "owner_id":  "f1f2b290-fac7-4660-9068-91510c5f04b0",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 06:36:55",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "17a2d86c-b1e4-4727-88d3-873ab2783283",
+                                  "new_owner_name":  "Zhang Yawei(EX)"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:18:01",
+                                  "old_owner_id":  "17a2d86c-b1e4-4727-88d3-873ab2783283",
+                                  "old_owner_name":  "Zhang Yawei(EX)",
+                                  "new_owner_id":  "f1f2b290-fac7-4660-9068-91510c5f04b0",
+                                  "new_owner_name":  "钱渊"
+                              }
+                          ],
+        "remark":  "外部用户Zhang Yawei使用",
+        "updated_at":  "2026-03-25 15:18:01"
+    },
+    {
+        "id":  "5c9fa9ce-770d-4465-9857-75653faf9fa0",
+        "computer_name":  "CND24519Z8",
+        "serial_number":  "CND24519Z838CA84C755E0",
+        "asset_number":  "932000000006",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-55-E0",
+        "owner_id":  "f1f2b290-fac7-4660-9068-91510c5f04b0",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 06:37:46",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "94d141b1-df3a-4d21-a4ca-94418bc9499c",
+                                  "new_owner_name":  "Zhang Teng(ex)"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:23:05",
+                                  "old_owner_id":  "94d141b1-df3a-4d21-a4ca-94418bc9499c",
+                                  "old_owner_name":  "Zhang Teng(ex)",
+                                  "new_owner_id":  "f1f2b290-fac7-4660-9068-91510c5f04b0",
+                                  "new_owner_name":  "钱渊"
+                              }
+                          ],
+        "remark":  "外部用户Zhang Teng使用",
+        "updated_at":  "2026-03-25 15:23:05"
+    },
+    {
+        "id":  "89209186-4d26-428b-a98d-cfab45210055",
+        "computer_name":  "CND24519Z9",
+        "serial_number":  "CND24519Z9",
+        "asset_number":  "932000000002",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-55-89",
+        "owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 06:38:25",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "529bf18c-9c27-49c2-b0c8-1f7b622f084c",
+                                  "new_owner_name":  "(Ex)Zhihao Ren"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:23:51",
+                                  "old_owner_id":  "529bf18c-9c27-49c2-b0c8-1f7b622f084c",
+                                  "old_owner_name":  "(Ex)Zhihao Ren",
+                                  "new_owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+                                  "new_owner_name":  "鲁博洋"
+                              }
+                          ],
+        "remark":  "外部用户Zhihao Ren使用",
+        "updated_at":  "2026-03-25 15:23:51"
+    },
+    {
+        "id":  "8ffb5592-6210-4972-aefb-2187e4147221",
+        "computer_name":  "5CG4061P2D",
+        "serial_number":  "5CG4061P2D",
+        "asset_number":  "932000000058",
+        "model":  "HP Zbook Fury 16 G10",
+        "mac_address":  "2C-58-B9-B2-00-9C",
+        "owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 06:39:07",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "d6a501e3-483d-4c24-85b9-750d66e33fb4",
+                                  "new_owner_name":  "Jiang Zhenyu(ex)"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:16:50",
+                                  "old_owner_id":  "d6a501e3-483d-4c24-85b9-750d66e33fb4",
+                                  "old_owner_name":  "Jiang Zhenyu(ex)",
+                                  "new_owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+                                  "new_owner_name":  "鲁博洋"
+                              }
+                          ],
+        "remark":  "外部用户Jiang Zhenyu使用",
+        "updated_at":  "2026-03-25 15:16:50"
+    },
+    {
+        "id":  "b6c48f84-c62c-4d36-8f61-74fa0084f31d",
+        "computer_name":  "5CG5232387",
+        "serial_number":  "5CG5232387",
+        "asset_number":  "",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "24-FB-E3-F5-C3-D7",
+        "owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 06:40:10",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "c00213da-9acd-4c4c-8f9f-5f33280da97e",
+                                  "new_owner_name":  "Wang Genxia(ex)"
+                              },
+                              {
+                                  "changed_at":  "2026-03-25 15:19:33",
+                                  "old_owner_id":  "c00213da-9acd-4c4c-8f9f-5f33280da97e",
+                                  "old_owner_name":  "Wang Genxia(ex)",
+                                  "new_owner_id":  "e7a094a1-78fa-4728-8a43-ca8e08180c7f",
+                                  "new_owner_name":  "鲁博洋"
+                              }
+                          ],
+        "remark":  "外部用户Wang Genxia使用",
+        "updated_at":  "2026-03-25 15:19:33"
+    },
+    {
+        "id":  "97942e13-676e-4568-82c8-ed61f3b4c4dc",
+        "computer_name":  "CND24519Z1",
+        "serial_number":  "CND24519Z1",
+        "asset_number":  "667001047424",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-55-B0",
+        "owner_id":  "7a145174-a014-4640-87b3-3d2947f6314f",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 15:12:00",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "7a145174-a014-4640-87b3-3d2947f6314f",
+                                  "new_owner_name":  "许鑫晨"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:12:00"
+    },
+    {
+        "id":  "714ac249-4f28-4e74-a04a-227c27bea061",
+        "computer_name":  "5CD541793B",
+        "serial_number":  "5CD541793B",
+        "asset_number":  "40403",
+        "model":  "HP EliteBook 6 G1i 14",
+        "mac_address":  "AC-F4-66-AE-4A-89",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 06:48:26"
+    },
+    {
+        "id":  "3708a91e-8404-4b16-aaca-782e232d7ecf",
+        "computer_name":  "5CD541793C",
+        "serial_number":  "5CD541793C",
+        "asset_number":  "",
+        "model":  "HP EliteBook 6 G1i 14",
+        "mac_address":  "AC-F4-66-AE-4A-86",
+        "owner_id":  "a601b4e1-e31b-4903-a633-d011f22435f3",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 15:28:52",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "a601b4e1-e31b-4903-a633-d011f22435f3",
+                                  "new_owner_name":  "王志永"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 16:03:02"
+    },
+    {
+        "id":  "0cd54331-bb3a-4041-83bf-7dd707d812f2",
+        "computer_name":  "R9-12XGNZ",
+        "serial_number":  "R9-12XGNZ",
+        "asset_number":  "667001045874",
+        "model":  "Thinkpad X13",
+        "mac_address":  "404",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "zhangbin离职",
+        "updated_at":  "2026-03-25 06:49:15"
+    },
+    {
+        "id":  "18f87600-4db7-4c16-8df6-8ec5fa395584",
+        "computer_name":  "CND1422Q5Q",
+        "serial_number":  "CND1422Q5Q",
+        "asset_number":  "667001047612",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "C8-5A-CF-41-3B-9E",
+        "owner_id":  "38847122-8d9c-4a2e-bae3-7cf88308b5c9",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 15:26:36",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "38847122-8d9c-4a2e-bae3-7cf88308b5c9",
+                                  "new_owner_name":  "司小夏"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:26:36"
+    },
+    {
+        "id":  "5594b8b7-621f-4c7a-8168-8f0bd9b9bc65",
+        "computer_name":  "PF39EY86",
+        "serial_number":  "PF39EY86",
+        "asset_number":  "667001047415",
+        "model":  "T14 G2",
+        "mac_address":  "404",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "handongjing离职",
+        "updated_at":  "2026-03-25 06:50:26"
+    },
+    {
+        "id":  "4198962f-637e-427f-9242-b3acee88a695",
+        "computer_name":  "cnd1244cvq",
+        "serial_number":  "cnd1244cvq",
+        "asset_number":  "667001045702",
+        "model":  "HP Zbook 15 G7",
+        "mac_address":  "",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "报废",
+        "updated_at":  "2026-03-26 10:18:52"
+    },
+    {
+        "id":  "c79644ca-783d-4cc5-a18c-ea03386ef15c",
+        "computer_name":  "PF3A0HA4",
+        "serial_number":  "PF3A0HA4",
+        "asset_number":  "932000000050",
+        "model":  "T14",
+        "mac_address":  "404",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "Li Rui 离职",
+        "updated_at":  "2026-03-25 06:52:52"
+    },
+    {
+        "id":  "47294dea-5f88-4355-93ec-18f98f5e9b44",
+        "computer_name":  "PF302A0H",
+        "serial_number":  "PF302A0H",
+        "asset_number":  "667001045880",
+        "model":  "T14",
+        "mac_address":  "404",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "Cheng Xiyi 离职",
+        "updated_at":  "2026-03-25 06:53:15"
+    },
+    {
+        "id":  "9e7fa2e9-be8e-4b30-9a15-4afb50c79a1d",
+        "computer_name":  "CND315276G",
+        "serial_number":  "CND315276G",
+        "asset_number":  "932000000004",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "7C-4D-8F-B8-E0-E3",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "GENGXU 离职",
+        "updated_at":  "2026-03-25 06:53:44"
+    },
+    {
+        "id":  "6865fb1f-4c47-41ff-81d9-ab4c6cafbbe0",
+        "computer_name":  "5CG5430JJT",
+        "serial_number":  "5CG5430JJT",
+        "asset_number":  "40404",
+        "model":  "HP ZBook Fury 16 G11",
+        "mac_address":  "5CG5430JJT",
+        "owner_id":  "",
+        "owner_history":  [
+
+                          ],
+        "remark":  "Reassign to Liu Siyu",
+        "updated_at":  "2026-03-25 06:55:11"
+    },
+    {
+        "id":  "d78b427f-3888-4d88-a319-8d811206d6ff",
+        "computer_name":  "CND24519Z7",
+        "serial_number":  "CND24519Z7",
+        "asset_number":  "932000000005",
+        "model":  "HP ZBook Fury 15 G8",
+        "mac_address":  "38-CA-84-C7-52-0D",
+        "owner_id":  "3c142bbc-c655-4f28-ac21-3b9072683c67",
+        "owner_history":  [
+                              {
+                                  "changed_at":  "2026-03-25 15:29:22",
+                                  "old_owner_id":  "",
+                                  "old_owner_name":  "库存",
+                                  "new_owner_id":  "3c142bbc-c655-4f28-ac21-3b9072683c67",
+                                  "new_owner_name":  "朱宸辉"
+                              }
+                          ],
+        "remark":  "",
+        "updated_at":  "2026-03-25 15:29:22"
     }
 ]

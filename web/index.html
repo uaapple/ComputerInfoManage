@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ITK China 电脑信息管理系统</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="brand">
+          <div class="brand-mark">
+            <img src="/assets/logo.jpg" alt="ITK Logo" />
+          </div>
+          <div class="brand-copy">
+            <p class="eyebrow">ITK China</p>
+            <h1>电脑信息管理系统</h1>
+            <p class="subtitle">设备资产、人员与库存电脑管理平台</p>
+          </div>
+        </div>
+        <div class="user-panel">
+          <div class="user-card">
+            <span class="user-label">当前用户</span>
+            <strong id="current-user">Admin</strong>
+            <span class="role-chip" id="current-role">admin</span>
+          </div>
+          <button class="ghost-btn" type="button">退出</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="card dashboard-card">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">总览</p>
+              <h2>今日资产概览</h2>
+            </div>
+            <div class="header-note">清新蓝白风格 Web 预览版</div>
+          </div>
+          <div class="stats-grid" id="stats-grid"></div>
+        </section>
+
+        <section class="content-grid">
+          <div class="card list-card">
+            <div class="section-head section-head-tight">
+              <div>
+                <p class="section-kicker">资产列表</p>
+                <h2>首页工作台</h2>
+              </div>
+              <div class="toolbar">
+                <div class="search-wrap">
+                  <input id="search-input" type="search" placeholder="搜索电脑、归属人、部门、邮箱..." />
+                </div>
+                <button class="secondary-btn" type="button">导出</button>
+                <button class="secondary-btn" type="button">库存管理</button>
+                <button class="secondary-btn" type="button">人员管理</button>
+              </div>
+            </div>
+
+            <div class="view-tabs">
+              <button class="tab-btn active" data-view="in-use" type="button">在用电脑</button>
+              <button class="tab-btn" data-view="inventory" type="button">库存电脑</button>
+              <button class="tab-btn" data-view="people" type="button">人员名单</button>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <aside class="card side-card">
+            <div class="section-head section-head-tight">
+              <div>
+                <p class="section-kicker">近期动态</p>
+                <h2>最新更新</h2>
+              </div>
+            </div>
+            <div id="recent-list" class="recent-list"></div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="detail-modal" class="detail-modal">
+      <div class="detail-shell">
+        <div class="detail-head">
+          <div>
+            <p class="section-kicker">详情</p>
+            <h3 id="detail-title">记录详情</h3>
+          </div>
+          <button id="close-detail" class="ghost-btn" type="button">关闭</button>
+        </div>
+        <div id="detail-content" class="detail-content"></div>
+      </div>
+    </dialog>
+
+    <script src="/app.js"></script>
+  </body>
+  </html>

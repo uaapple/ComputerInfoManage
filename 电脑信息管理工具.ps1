@@ -1,5 +1,6 @@
 ﻿Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
+Add-Type -AssemblyName System.Security
 
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
@@ -8,6 +9,13 @@ $script:DataDir = Join-Path $script:RootDir 'data'
 $script:ComputersFile = Join-Path $script:DataDir 'computers.json'
 $script:ColleaguesFile = Join-Path $script:DataDir 'colleagues.json'
 $script:InventoryMailBatchesFile = Join-Path $script:DataDir 'inventory_mail_batches.json'
+$script:CloudBackupConfigFile = Join-Path $script:DataDir 'cloud_backup_config.json'
+$script:CloudBackupSyncStateFile = Join-Path $script:DataDir 'cloud_backup_sync_state.json'
+$script:CloudBackupManifestFileName = 'sync_manifest.json'
+$script:CloudBackupBaseUrl = ''
+$script:CloudBackupUsername = ''
+$script:CloudBackupPassword = ''
+$script:CloudBackupRemoteDir = ''
 $script:Computers = @()
 $script:Colleagues = @()
 $script:InventoryMailBatches = @()
@@ -173,6 +181,50 @@ function Get-OwnerLabel {
     return $displayName
 }
 
+function Normalize-AssetNumberInput {
+    param([string]$AssetNumber)
+
+    $text = [string]$AssetNumber
+    if ([string]::IsNullOrWhiteSpace($text)) { return '' }
+
+    $text = $text.Trim()
+    if ($text -in @('暂无', 'N/A', 'n/a', 'NA', 'na', 'None', 'none', 'null', 'NULL')) {
+        return ''
+    }
+
+    return $text
+}
+
+function Get-AssetNumberDisplay {
+    param([string]$AssetNumber)
+
+    $value = Normalize-AssetNumberInput -AssetNumber $AssetNumber
+    if ([string]::IsNullOrWhiteSpace($value)) { return 'N/A' }
+    return $value
+}
+
+function Normalize-MacAddressInput {
+    param([string]$MacAddress)
+
+    $text = [string]$MacAddress
+    if ([string]::IsNullOrWhiteSpace($text)) { return '' }
+
+    $text = $text.Trim()
+    if ($text -in @('暂无', 'N/A', 'n/a', 'NA', 'na', 'None', 'none', 'null', 'NULL')) {
+        return ''
+    }
+
+    return $text
+}
+
+function Get-MacAddressDisplay {
+    param([string]$MacAddress)
+
+    $value = Normalize-MacAddressInput -MacAddress $MacAddress
+    if ([string]::IsNullOrWhiteSpace($value)) { return 'N/A' }
+    return $value
+}
+
 function Normalize-ComputerRecord {
     param($Record)
 
@@ -184,6 +236,8 @@ function Normalize-ComputerRecord {
             Add-Member -InputObject $Record -MemberType NoteProperty -Name $name -Value '' -Force
         }
     }
+    $Record.asset_number = Normalize-AssetNumberInput -AssetNumber ([string]$Record.asset_number)
+    $Record.mac_address = Normalize-MacAddressInput -MacAddress ([string]$Record.mac_address)
     if (-not ($Record.PSObject.Properties.Name -contains 'updated_at') -or [string]::IsNullOrWhiteSpace([string]$Record.updated_at)) {
         Add-Member -InputObject $Record -MemberType NoteProperty -Name updated_at -Value (Get-Date).ToString('yyyy-MM-dd HH:mm:ss') -Force
     }
@@ -209,6 +263,7 @@ function Normalize-ComputerRecord {
 
 function Load-AllData {
     Ensure-DataFiles
+    Load-CloudBackupConfig
     $script:Colleagues = @(Load-JsonArray -Path $script:ColleaguesFile | ForEach-Object { Normalize-ColleagueRecord -Record $_ })
     $script:Computers = @(Load-JsonArray -Path $script:ComputersFile | ForEach-Object { Normalize-ComputerRecord -Record $_ })
     $script:InventoryMailBatches = @(Load-JsonArray -Path $script:InventoryMailBatchesFile | ForEach-Object { Normalize-InventoryMailBatchRecord -Record $_ })
@@ -217,6 +272,425 @@ function Load-AllData {
 function Save-Computers { Save-JsonArray -Path $script:ComputersFile -Data $script:Computers }
 function Save-Colleagues { Save-JsonArray -Path $script:ColleaguesFile -Data $script:Colleagues }
 function Save-InventoryMailBatches { Save-JsonArray -Path $script:InventoryMailBatchesFile -Data $script:InventoryMailBatches }
+
+function Protect-CloudBackupSecret {
+    param([string]$Value)
+
+    if ([string]::IsNullOrWhiteSpace($Value)) { return '' }
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($Value)
+    $protectedBytes = [System.Security.Cryptography.ProtectedData]::Protect($bytes, $null, [System.Security.Cryptography.DataProtectionScope]::CurrentUser)
+    return [Convert]::ToBase64String($protectedBytes)
+}
+
+function Unprotect-CloudBackupSecret {
+    param([string]$Value)
+
+    if ([string]::IsNullOrWhiteSpace($Value)) { return '' }
+    $bytes = [Convert]::FromBase64String($Value)
+    $plainBytes = [System.Security.Cryptography.ProtectedData]::Unprotect($bytes, $null, [System.Security.Cryptography.DataProtectionScope]::CurrentUser)
+    return [System.Text.Encoding]::UTF8.GetString($plainBytes)
+}
+
+function Get-DefaultCloudBackupConfig {
+    return [PSCustomObject]@{
+        base_url = 'http://uaapple.mycloudnas.com:8091'
+        username = 'admin'
+        remote_dir = '/Backup/laptopsinfo'
+        password_encrypted = Protect-CloudBackupSecret -Value '19940301'
+    }
+}
+
+function Ensure-CloudBackupConfig {
+    if (-not (Test-Path $script:CloudBackupConfigFile)) {
+        (Get-DefaultCloudBackupConfig | ConvertTo-Json -Depth 4) | Set-Content -Path $script:CloudBackupConfigFile -Encoding UTF8
+    }
+}
+
+function Load-CloudBackupConfig {
+    Ensure-CloudBackupConfig
+
+    try {
+        $raw = Get-Content -Path $script:CloudBackupConfigFile -Raw -Encoding UTF8
+        $config = $raw | ConvertFrom-Json
+        $script:CloudBackupBaseUrl = [string]$config.base_url
+        $script:CloudBackupUsername = [string]$config.username
+        $script:CloudBackupRemoteDir = [string]$config.remote_dir
+        $script:CloudBackupPassword = Unprotect-CloudBackupSecret -Value ([string]$config.password_encrypted)
+    } catch {
+        try {
+            $defaultConfig = Get-DefaultCloudBackupConfig
+            ($defaultConfig | ConvertTo-Json -Depth 4) | Set-Content -Path $script:CloudBackupConfigFile -Encoding UTF8
+
+            $script:CloudBackupBaseUrl = [string]$defaultConfig.base_url
+            $script:CloudBackupUsername = [string]$defaultConfig.username
+            $script:CloudBackupRemoteDir = [string]$defaultConfig.remote_dir
+            $script:CloudBackupPassword = Unprotect-CloudBackupSecret -Value ([string]$defaultConfig.password_encrypted)
+        } catch {
+            Show-WarningMessage -Title '云端配置读取失败' -Message ("无法读取云端备份配置。`n`n{0}" -f $_.Exception.Message)
+            $script:CloudBackupBaseUrl = ''
+            $script:CloudBackupUsername = ''
+            $script:CloudBackupRemoteDir = ''
+            $script:CloudBackupPassword = ''
+        }
+    }
+}
+
+function Save-CloudBackupConfig {
+    param([string]$BaseUrl, [string]$Username, [string]$Password, [string]$RemoteDir)
+
+    $config = [PSCustomObject]@{
+        base_url = $BaseUrl.Trim()
+        username = $Username.Trim()
+        remote_dir = $RemoteDir.Trim()
+        password_encrypted = Protect-CloudBackupSecret -Value $Password
+    }
+
+    ($config | ConvertTo-Json -Depth 4) | Set-Content -Path $script:CloudBackupConfigFile -Encoding UTF8
+    Load-CloudBackupConfig
+}
+
+function Get-DefaultCloudBackupSyncState {
+    return [PSCustomObject]@{
+        last_known_revision = 0
+        last_known_data_hash = ''
+        last_sync_at = ''
+    }
+}
+
+function Load-CloudBackupSyncState {
+    if (-not (Test-Path $script:CloudBackupSyncStateFile)) {
+        return Get-DefaultCloudBackupSyncState
+    }
+
+    try {
+        $raw = Get-Content -Path $script:CloudBackupSyncStateFile -Raw -Encoding UTF8
+        if ([string]::IsNullOrWhiteSpace($raw)) { return Get-DefaultCloudBackupSyncState }
+        $state = $raw | ConvertFrom-Json
+        if ($null -eq $state) { return Get-DefaultCloudBackupSyncState }
+        if (-not ($state.PSObject.Properties.Name -contains 'last_known_revision')) { Add-Member -InputObject $state -MemberType NoteProperty -Name last_known_revision -Value 0 -Force }
+        if (-not ($state.PSObject.Properties.Name -contains 'last_known_data_hash')) { Add-Member -InputObject $state -MemberType NoteProperty -Name last_known_data_hash -Value '' -Force }
+        if (-not ($state.PSObject.Properties.Name -contains 'last_sync_at')) { Add-Member -InputObject $state -MemberType NoteProperty -Name last_sync_at -Value '' -Force }
+        return $state
+    } catch {
+        return Get-DefaultCloudBackupSyncState
+    }
+}
+
+function Save-CloudBackupSyncState {
+    param([int]$Revision, [string]$DataHash)
+
+    $state = [PSCustomObject]@{
+        last_known_revision = $Revision
+        last_known_data_hash = [string]$DataHash
+        last_sync_at = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+    }
+
+    ($state | ConvertTo-Json -Depth 4) | Set-Content -Path $script:CloudBackupSyncStateFile -Encoding UTF8
+}
+
+function Test-CloudBackupConfigured {
+    if ([string]::IsNullOrWhiteSpace($script:CloudBackupBaseUrl) -or
+        [string]::IsNullOrWhiteSpace($script:CloudBackupUsername) -or
+        [string]::IsNullOrWhiteSpace($script:CloudBackupPassword) -or
+        [string]::IsNullOrWhiteSpace($script:CloudBackupRemoteDir)) {
+        Show-WarningMessage '云端备份配置不完整，请检查 data/cloud_backup_config.json。'
+        return $false
+    }
+
+    return $true
+}
+
+function Get-CloudBackupFileDefinitions {
+    return @(
+        [PSCustomObject]@{ Name = 'computers.json'; LocalPath = $script:ComputersFile },
+        [PSCustomObject]@{ Name = 'colleagues.json'; LocalPath = $script:ColleaguesFile },
+        [PSCustomObject]@{ Name = 'inventory_mail_batches.json'; LocalPath = $script:InventoryMailBatchesFile }
+    )
+}
+
+function ConvertTo-FileBrowserApiPath {
+    param([string]$Path)
+
+    $text = [string]$Path
+    if ([string]::IsNullOrWhiteSpace($text)) { return '/' }
+
+    $trimmed = $text.Trim()
+    $segments = @($trimmed -split '/' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    if ($segments.Count -eq 0) { return '/' }
+
+    return '/' + (($segments | ForEach-Object { [Uri]::EscapeDataString($_) }) -join '/')
+}
+
+function Get-FileBrowserLoginToken {
+    $loginUri = ('{0}/api/login' -f $script:CloudBackupBaseUrl.TrimEnd('/'))
+    $loginBody = @{ username = $script:CloudBackupUsername; password = $script:CloudBackupPassword } | ConvertTo-Json -Compress
+
+    $response = Invoke-RestMethod -Method Post -Uri $loginUri -Body $loginBody -ContentType 'application/json'
+
+    if ($response -is [string] -and -not [string]::IsNullOrWhiteSpace($response)) {
+        return $response.Trim()
+    }
+
+    if ($null -ne $response) {
+        if ($response.PSObject.Properties.Name -contains 'token' -and -not [string]::IsNullOrWhiteSpace([string]$response.token)) {
+            return [string]$response.token
+        }
+        if ($response.PSObject.Properties.Name -contains 'data' -and -not [string]::IsNullOrWhiteSpace([string]$response.data)) {
+            return [string]$response.data
+        }
+    }
+
+    throw '登录个人云成功，但未返回可用的访问令牌。'
+}
+
+function Get-FileBrowserAuthHeaders {
+    param([string]$Token)
+
+    return @{ 'X-Auth' = $Token }
+}
+
+function Test-CloudBackupRemoteDirectory {
+    param([string]$Token)
+
+    $resourceUri = ('{0}/api/resources{1}' -f $script:CloudBackupBaseUrl.TrimEnd('/'), (ConvertTo-FileBrowserApiPath -Path $script:CloudBackupRemoteDir))
+    try {
+        [void](Invoke-RestMethod -Method Get -Uri $resourceUri -Headers (Get-FileBrowserAuthHeaders -Token $Token))
+    } catch {
+        throw ("云端目录不存在或不可访问：{0}" -f $script:CloudBackupRemoteDir)
+    }
+}
+
+function Get-CloudBackupRemoteFileApiPath {
+    param([string]$FileName)
+
+    $baseDir = [string]$script:CloudBackupRemoteDir
+    if ($baseDir.EndsWith('/')) {
+        return ('{0}{1}' -f $baseDir.TrimEnd('/'), "/$FileName")
+    }
+
+    return ('{0}/{1}' -f $baseDir.TrimEnd('/'), $FileName)
+}
+
+function Test-JsonArrayFileContent {
+    param([string]$Path)
+
+    $raw = Get-Content -Path $Path -Raw -Encoding UTF8
+    if ([string]::IsNullOrWhiteSpace($raw)) {
+        throw "文件 $Path 内容为空。"
+    }
+
+    $data = $raw | ConvertFrom-Json
+    if ($null -eq $data) { return }
+    if ($data -is [System.Array]) { return }
+}
+
+function Get-StringSha256 {
+    param([string]$Text)
+
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes([string]$Text)
+        $hash = $sha.ComputeHash($bytes)
+        return ([BitConverter]::ToString($hash) -replace '-', '').ToLowerInvariant()
+    } finally {
+        $sha.Dispose()
+    }
+}
+
+function Get-LocalCloudBackupManifest {
+    $fileItems = @()
+    foreach ($item in (Get-CloudBackupFileDefinitions)) {
+        $content = Get-Content -Path $item.LocalPath -Raw -Encoding UTF8
+        $fileItems += [PSCustomObject]@{
+            name = $item.Name
+            sha256 = Get-StringSha256 -Text $content
+        }
+    }
+
+    $dataHashSource = @($fileItems | Sort-Object name | ForEach-Object { '{0}:{1}' -f [string]$_.name, [string]$_.sha256 }) -join '|'
+    return [PSCustomObject]@{
+        revision = 0
+        updated_at = ''
+        updated_by = [PSCustomObject]@{
+            user = [Environment]::UserName
+            machine = [Environment]::MachineName
+        }
+        files = $fileItems
+        data_hash = Get-StringSha256 -Text $dataHashSource
+    }
+}
+
+function Get-RemoteCloudBackupManifest {
+    param([string]$Token)
+
+    $remotePath = Get-CloudBackupRemoteFileApiPath -FileName $script:CloudBackupManifestFileName
+    $downloadUri = ('{0}/api/raw{1}' -f $script:CloudBackupBaseUrl.TrimEnd('/'), (ConvertTo-FileBrowserApiPath -Path $remotePath))
+
+    try {
+        $response = Invoke-WebRequest -Method Get -Uri $downloadUri -Headers (Get-FileBrowserAuthHeaders -Token $Token)
+        if ([string]::IsNullOrWhiteSpace([string]$response.Content)) { return $null }
+        return ($response.Content | ConvertFrom-Json)
+    } catch {
+        return $null
+    }
+}
+
+function Save-RemoteCloudBackupManifest {
+    param([string]$Token, $Manifest)
+
+    $remotePath = Get-CloudBackupRemoteFileApiPath -FileName $script:CloudBackupManifestFileName
+    $uploadUri = ('{0}/api/resources{1}?override=true' -f $script:CloudBackupBaseUrl.TrimEnd('/'), (ConvertTo-FileBrowserApiPath -Path $remotePath))
+    $body = $Manifest | ConvertTo-Json -Depth 8
+    Invoke-RestMethod -Method Post -Uri $uploadUri -Headers (Get-FileBrowserAuthHeaders -Token $Token) -Body $body -ContentType 'application/json; charset=utf-8' | Out-Null
+}
+
+function Test-LocalDataChangedSinceLastSync {
+    $state = Load-CloudBackupSyncState
+    if ([string]::IsNullOrWhiteSpace([string]$state.last_known_data_hash)) { return $false }
+    $localManifest = Get-LocalCloudBackupManifest
+    return ([string]$state.last_known_data_hash -ne [string]$localManifest.data_hash)
+}
+
+function Check-CloudBackupVersionOnStartup {
+    if (-not (Test-CloudBackupConfigured)) { return }
+
+    try {
+        $token = Get-FileBrowserLoginToken
+        $remoteManifest = Get-RemoteCloudBackupManifest -Token $token
+        if ($null -eq $remoteManifest) { return }
+
+        $localState = Load-CloudBackupSyncState
+        if ([int]$remoteManifest.revision -le [int]$localState.last_known_revision) { return }
+
+        $remoteBy = if ($null -ne $remoteManifest.updated_by) {
+            '{0}@{1}' -f [string]$remoteManifest.updated_by.user, [string]$remoteManifest.updated_by.machine
+        } else {
+            '其他终端'
+        }
+
+        $message = @(
+            '检测到云端有比当前本地记录更新的版本。'
+            ''
+            ('云端版本：v{0}' -f [string]$remoteManifest.revision)
+            ('更新时间：{0}' -f [string]$remoteManifest.updated_at)
+            ('更新终端：{0}' -f $remoteBy)
+            ''
+            '本次不会自动覆盖本地数据。'
+            '建议在开始编辑前先点击[拉取云端]，再进行维护。'
+        ) -join [Environment]::NewLine
+
+        Show-InfoMessage -Title '发现云端新版本' -Message $message
+    } catch {
+        return
+    }
+}
+
+function Invoke-CloudBackupUpload {
+    if (-not (Test-CloudBackupConfigured)) { return }
+
+    Save-Computers
+    Save-Colleagues
+    Save-InventoryMailBatches
+
+    try {
+        $token = Get-FileBrowserLoginToken
+        Test-CloudBackupRemoteDirectory -Token $token
+        $localState = Load-CloudBackupSyncState
+        $remoteManifest = Get-RemoteCloudBackupManifest -Token $token
+        $localManifest = Get-LocalCloudBackupManifest
+
+        if ($null -ne $remoteManifest -and (
+            [int]$localState.last_known_revision -ne [int]$remoteManifest.revision -or
+            [string]$localState.last_known_data_hash -ne [string]$remoteManifest.data_hash
+        )) {
+            $remoteBy = if ($null -ne $remoteManifest.updated_by) {
+                '{0}@{1}' -f [string]$remoteManifest.updated_by.user, [string]$remoteManifest.updated_by.machine
+            } else {
+                '其他终端'
+            }
+            Show-WarningMessage -Title '云端版本已更新' -Message ("检测到云端数据已被更新，当前本地版本不是最新基础版本。`n`n云端版本：{0}`n更新时间：{1}`n更新终端：{2}`n`n请先点击[拉取云端]，确认最新数据后再上传，避免旧版本覆盖新版本。" -f [string]$remoteManifest.revision, [string]$remoteManifest.updated_at, $remoteBy)
+            return
+        }
+
+        $uploadedNames = @()
+        foreach ($item in (Get-CloudBackupFileDefinitions)) {
+            $remotePath = Get-CloudBackupRemoteFileApiPath -FileName $item.Name
+            $uploadUri = ('{0}/api/resources{1}?override=true' -f $script:CloudBackupBaseUrl.TrimEnd('/'), (ConvertTo-FileBrowserApiPath -Path $remotePath))
+            $content = Get-Content -Path $item.LocalPath -Raw -Encoding UTF8
+            Invoke-RestMethod -Method Post -Uri $uploadUri -Headers (Get-FileBrowserAuthHeaders -Token $token) -Body $content -ContentType 'application/json; charset=utf-8' | Out-Null
+            $uploadedNames += $item.Name
+        }
+
+        $localManifest.revision = if ($null -eq $remoteManifest) { 1 } else { [int]$remoteManifest.revision + 1 }
+        $localManifest.updated_at = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+        Save-RemoteCloudBackupManifest -Token $token -Manifest $localManifest
+        Save-CloudBackupSyncState -Revision ([int]$localManifest.revision) -DataHash ([string]$localManifest.data_hash)
+
+        Show-InfoMessage -Title '云端备份完成' -Message ("已上传到个人云：`n{0}`n`n版本：v{1}`n文件：`n- {2}" -f $script:CloudBackupRemoteDir, [string]$localManifest.revision, ($uploadedNames -join "`n- "))
+    } catch {
+        Show-WarningMessage -Title '云端备份失败' -Message ("未能上传到个人云。`n`n{0}" -f $_.Exception.Message)
+    }
+}
+
+function Invoke-CloudBackupDownload {
+    if (-not (Test-CloudBackupConfigured)) { return }
+
+    $hasLocalUnsyncedChanges = Test-LocalDataChangedSinceLastSync
+    $localChangeHint = if ($hasLocalUnsyncedChanges) {
+        '检测到本地存在未同步改动，本次拉取会覆盖这些改动。'
+    } else {
+        '建议在其他人不同时编辑本工具时使用。'
+    }
+    $confirmMessage = @(
+        '即将从个人云拉取最新数据并覆盖本地文件。'
+        $localChangeHint
+        ''
+        '是否继续？'
+    ) -join [Environment]::NewLine
+
+    $confirmResult = [System.Windows.Forms.MessageBox]::Show($confirmMessage, '确认拉取云端数据', [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+    if ($confirmResult -ne [System.Windows.Forms.DialogResult]::Yes) { return }
+
+    $tempDir = Join-Path ([System.IO.Path]::GetTempPath()) ('laptopsinfo_sync_' + [guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $tempDir | Out-Null
+
+    try {
+        $token = Get-FileBrowserLoginToken
+        $remoteManifest = Get-RemoteCloudBackupManifest -Token $token
+        if ($null -eq $remoteManifest) {
+            Show-WarningMessage '云端还没有可用的同步版本信息，请先完成一次云端备份。'
+            return
+        }
+        $downloadedNames = @()
+
+        foreach ($item in (Get-CloudBackupFileDefinitions)) {
+            $remotePath = Get-CloudBackupRemoteFileApiPath -FileName $item.Name
+            $downloadUri = ('{0}/api/raw{1}' -f $script:CloudBackupBaseUrl.TrimEnd('/'), (ConvertTo-FileBrowserApiPath -Path $remotePath))
+            $tempFile = Join-Path $tempDir $item.Name
+            Invoke-WebRequest -Method Get -Uri $downloadUri -Headers (Get-FileBrowserAuthHeaders -Token $token) -OutFile $tempFile | Out-Null
+            Test-JsonArrayFileContent -Path $tempFile
+            Copy-Item -Path $tempFile -Destination $item.LocalPath -Force
+            $downloadedNames += $item.Name
+        }
+
+        Load-AllData
+        Refresh-DepartmentOptions
+        Refresh-MentorOptions
+        Refresh-ModelOptions
+        Refresh-ComputerGrid
+        Refresh-OwnerSuggestions
+        Clear-ComputerForm
+        Save-CloudBackupSyncState -Revision ([int]$remoteManifest.revision) -DataHash ([string]$remoteManifest.data_hash)
+
+        Show-InfoMessage -Title '云端拉取完成' -Message ("已从个人云同步最新数据：`n{0}`n`n版本：v{1}`n文件：`n- {2}" -f $script:CloudBackupRemoteDir, [string]$remoteManifest.revision, ($downloadedNames -join "`n- "))
+    } catch {
+        Show-WarningMessage -Title '云端拉取失败' -Message ("未能从个人云获取最新数据。`n`n{0}" -f $_.Exception.Message)
+    } finally {
+        if (Test-Path $tempDir) {
+            Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
+}
 
 function Format-ColleagueOption {
     param($Colleague)
@@ -284,9 +758,11 @@ function New-InventoryMailComputerSnapshot {
         id = [string]$Computer.id
         computer_name = [string]$Computer.computer_name
         serial_number = [string]$Computer.serial_number
-        asset_number = [string]$Computer.asset_number
+        asset_number = Get-AssetNumberDisplay -AssetNumber ([string]$Computer.asset_number)
         model = [string]$Computer.model
-        mac_address = [string]$Computer.mac_address
+        mac_address = Get-MacAddressDisplay -MacAddress ([string]$Computer.mac_address)
+        owner_id = [string]$Computer.owner_id
+        owner_name = Get-OwnerLabel -OwnerId ([string]$Computer.owner_id)
         remark = [string]$Computer.remark
         updated_at = [string]$Computer.updated_at
     }
@@ -299,10 +775,11 @@ function Format-InventoryMailComputerList {
     $index = 1
     foreach ($computer in @($Computers)) {
         $lines += ('{0}. 电脑名称：{1}' -f $index, [string]$computer.computer_name)
+        $lines += ('   当前归属人：{0}' -f (Get-OwnerLabel -OwnerId ([string]$computer.owner_id)))
         $lines += ('   序列号：{0}' -f [string]$computer.serial_number)
-        $lines += ('   固定资产号：{0}' -f [string]$computer.asset_number)
+        $lines += ('   固定资产号：{0}' -f (Get-AssetNumberDisplay -AssetNumber ([string]$computer.asset_number)))
         $lines += ('   型号：{0}' -f [string]$computer.model)
-        $lines += ('   MAC 地址：{0}' -f [string]$computer.mac_address)
+        $lines += ('   MAC 地址：{0}' -f (Get-MacAddressDisplay -MacAddress ([string]$computer.mac_address)))
         $remarkText = if ([string]::IsNullOrWhiteSpace([string]$computer.remark)) { '无' } else { [string]$computer.remark }
         $lines += ('   备注：{0}' -f $remarkText)
         $lines += ''
@@ -313,18 +790,31 @@ function Format-InventoryMailComputerList {
 }
 
 function Get-InventoryMailBody {
-    param(
-        [Parameter(Mandatory = $true)]$Colleague,
-        [Parameter(Mandatory = $true)][array]$Computers
-    )
+    param([Parameter(Mandatory = $true)]$Recipient)
 
-    $computerList = Format-InventoryMailComputerList -Computers $Computers
-    $displayName = [string]$Colleague.display_name
+    $computerList = Format-InventoryMailComputerList -Computers $Recipient.computers
+    $displayName = [string]$Recipient.display_name
+    $selfComputers = @($Recipient.computers | Where-Object { [string]$_.owner_id -eq [string]$Recipient.colleague_id })
+    $delegatedComputers = @($Recipient.computers | Where-Object { [string]$_.owner_id -ne [string]$Recipient.colleague_id })
+    $ownerNames = @($delegatedComputers | ForEach-Object { Get-OwnerLabel -OwnerId ([string]$_.owner_id) } | Sort-Object -Unique)
+
+    if ($delegatedComputers.Count -eq 0) {
+        $introText = '为便于完成当前电脑资产盘点，请您确认以下登记在您名下的电脑目前仍由您本人使用，且设备状态正常。'
+    } elseif ($selfComputers.Count -eq 0) {
+        $introText = '为便于完成当前电脑资产盘点，请您协助确认以下登记在您所负责实习生名下的电脑信息。'
+    } else {
+        $introText = '为便于完成当前电脑资产盘点，请您一并确认以下登记在您本人名下及您所负责实习生名下的电脑信息。'
+    }
+
+    $ownerHint = ''
+    if ($ownerNames.Count -gt 0) {
+        $ownerHint = [Environment]::NewLine + ('涉及实习生：{0}' -f ($ownerNames -join '、'))
+    }
 
     return @"
 $displayName，您好：
 
-为便于完成当前电脑资产盘点，请您确认以下登记在您名下的电脑目前仍由您本人使用，且设备状态正常。
+$introText$ownerHint
 
 $computerList
 
@@ -339,28 +829,197 @@ $computerList
 function Get-InventoryMailRecipients {
     $validRecipients = @()
     $skippedRecipients = @()
+    $recipientMap = @{}
     $groupedRecords = @($script:Computers | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.owner_id) } | Group-Object -Property owner_id)
 
     foreach ($group in ($groupedRecords | Sort-Object Name)) {
         $ownerId = [string]$group.Name
-        $colleague = Get-ColleagueById -Id $ownerId
+        $ownerColleague = Get-ColleagueById -Id $ownerId
         $computers = @($group.Group | Sort-Object computer_name, serial_number, asset_number)
 
-        if ($null -eq $colleague) {
+        if ($null -eq $ownerColleague) {
             $skippedRecipients += [PSCustomObject]@{ colleague_id = $ownerId; display_name = '未知人员'; email = ''; computers = $computers; result = 'skipped_missing_colleague'; result_message = '未找到对应的人员记录。' }
             continue
         }
 
-        $email = [string]$colleague.email
+        $recipientColleague = $ownerColleague
+        $sourceLabel = '正式员工本人'
+        if ([string]$ownerColleague.employee_type -eq '实习生') {
+            $mentorId = [string]$ownerColleague.mentor_id
+            if ([string]::IsNullOrWhiteSpace($mentorId)) {
+                $skippedRecipients += [PSCustomObject]@{
+                    colleague_id = [string]$ownerColleague.id
+                    display_name = [string]$ownerColleague.display_name
+                    email = [string]$ownerColleague.email
+                    computers = $computers
+                    result = 'skipped_missing_mentor'
+                    result_message = '该实习生未关联 Mentor，无法生成盘点邮件。'
+                }
+                continue
+            }
+
+            $mentorRecord = Get-ColleagueById -Id $mentorId
+            if ($null -eq $mentorRecord -or [string]$mentorRecord.employee_type -ne '正式员工') {
+                $skippedRecipients += [PSCustomObject]@{
+                    colleague_id = [string]$ownerColleague.id
+                    display_name = [string]$ownerColleague.display_name
+                    email = [string]$ownerColleague.email
+                    computers = $computers
+                    result = 'skipped_invalid_mentor'
+                    result_message = '该实习生关联的 Mentor 不存在或不是正式员工。'
+                }
+                continue
+            }
+
+            $recipientColleague = $mentorRecord
+            $sourceLabel = ('实习生 Mentor（{0}）' -f [string]$ownerColleague.display_name)
+        }
+
+        $email = [string]$recipientColleague.email
         if (-not (Test-EmailAddressValid -Email $email)) {
-            $skippedRecipients += [PSCustomObject]@{ colleague_id = [string]$colleague.id; display_name = [string]$colleague.display_name; email = $email; computers = $computers; result = 'skipped_invalid_email'; result_message = '邮箱为空或格式不正确。' }
+            $skippedRecipients += [PSCustomObject]@{
+                colleague_id = [string]$recipientColleague.id
+                display_name = [string]$recipientColleague.display_name
+                email = $email
+                computers = $computers
+                result = 'skipped_invalid_email'
+                result_message = if ([string]$ownerColleague.employee_type -eq '实习生') {
+                    '对应 Mentor 的邮箱为空或格式不正确。'
+                } else {
+                    '邮箱为空或格式不正确。'
+                }
+            }
             continue
         }
 
-        $validRecipients += [PSCustomObject]@{ colleague = $colleague; colleague_id = [string]$colleague.id; display_name = [string]$colleague.display_name; email = $email.Trim(); computers = $computers }
+        $recipientKey = [string]$recipientColleague.id
+        if (-not $recipientMap.ContainsKey($recipientKey)) {
+            $recipientMap[$recipientKey] = [PSCustomObject]@{
+                colleague = $recipientColleague
+                colleague_id = [string]$recipientColleague.id
+                display_name = [string]$recipientColleague.display_name
+                email = $email.Trim()
+                computers = @()
+                source_labels = @()
+            }
+        }
+
+        $recipientMap[$recipientKey].computers = @($recipientMap[$recipientKey].computers) + $computers
+        $recipientMap[$recipientKey].source_labels = @($recipientMap[$recipientKey].source_labels) + $sourceLabel
+    }
+
+    foreach ($recipient in $recipientMap.Values) {
+        $recipient.computers = @($recipient.computers | Sort-Object computer_name, serial_number, asset_number)
+        $recipient.source_labels = @($recipient.source_labels | Sort-Object -Unique)
+        $validRecipients += $recipient
     }
 
     return [PSCustomObject]@{ ValidRecipients = @($validRecipients | Sort-Object display_name, email); SkippedRecipients = @($skippedRecipients | Sort-Object display_name, colleague_id) }
+}
+
+function Select-InventoryMailRecipients {
+    param([array]$Recipients, [array]$SkippedRecipients)
+
+    $dialog = New-Object System.Windows.Forms.Form
+    $dialog.Text = '选择邮件盘点名单'
+    $dialog.StartPosition = 'CenterParent'
+    $dialog.Size = New-Object System.Drawing.Size(760, 560)
+    $dialog.MinimumSize = New-Object System.Drawing.Size(700, 520)
+    $dialog.BackColor = [System.Drawing.Color]::White
+
+    $titleLabel = New-Object System.Windows.Forms.Label
+    $titleLabel.Text = "请选择要生成盘点邮件的人员（候选 $(@($Recipients).Count) 人）"
+    $titleLabel.Location = New-Object System.Drawing.Point(18, 16)
+    $titleLabel.Size = New-Object System.Drawing.Size(560, 24)
+    $titleLabel.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10, [System.Drawing.FontStyle]::Bold)
+    $dialog.Controls.Add($titleLabel)
+
+    $hintLabel = New-Object System.Windows.Forms.Label
+    $hintLabel.Text = "说明：正式员工会发给本人；实习生会发给对应 Mentor。未纳入候选 $(@($SkippedRecipients).Count) 人。"
+    $hintLabel.Location = New-Object System.Drawing.Point(18, 44)
+    $hintLabel.Size = New-Object System.Drawing.Size(700, 24)
+    $hintLabel.ForeColor = [System.Drawing.Color]::FromArgb(95, 99, 104)
+    $dialog.Controls.Add($hintLabel)
+
+    $listBox = New-Object System.Windows.Forms.CheckedListBox
+    $listBox.Location = New-Object System.Drawing.Point(18, 76)
+    $listBox.Size = New-Object System.Drawing.Size(708, 360)
+    $listBox.Anchor = 'Top,Bottom,Left,Right'
+    $listBox.CheckOnClick = $true
+    $listBox.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10)
+    $listBox.DisplayMember = 'Display'
+    $dialog.Controls.Add($listBox)
+
+    foreach ($recipient in @($Recipients)) {
+        $sourceText = [string]((@($recipient.source_labels) -join '，'))
+        $display = '{0}（{1}）- {2} 台电脑 - {3}' -f [string]$recipient.display_name, [string]$recipient.email, @($recipient.computers).Count, $sourceText
+        [void]$listBox.Items.Add([PSCustomObject]@{ Display = $display; Recipient = $recipient }, $true)
+    }
+
+    $btnSelectAll = New-Object System.Windows.Forms.Button
+    $btnSelectAll.Text = '全选'
+    $btnSelectAll.Size = New-Object System.Drawing.Size(90, 32)
+    $btnSelectAll.Location = New-Object System.Drawing.Point(18, 454)
+    $btnSelectAll.Anchor = 'Bottom,Left'
+    $btnSelectAll.FlatStyle = 'Flat'
+    $dialog.Controls.Add($btnSelectAll)
+
+    $btnClearAll = New-Object System.Windows.Forms.Button
+    $btnClearAll.Text = '取消全选'
+    $btnClearAll.Size = New-Object System.Drawing.Size(90, 32)
+    $btnClearAll.Location = New-Object System.Drawing.Point(118, 454)
+    $btnClearAll.Anchor = 'Bottom,Left'
+    $btnClearAll.FlatStyle = 'Flat'
+    $dialog.Controls.Add($btnClearAll)
+
+    $btnOk = New-Object System.Windows.Forms.Button
+    $btnOk.Text = '确认生成'
+    $btnOk.Size = New-Object System.Drawing.Size(110, 34)
+    $btnOk.Location = New-Object System.Drawing.Point(500, 452)
+    $btnOk.Anchor = 'Bottom,Right'
+    $btnOk.FlatStyle = 'Flat'
+    $btnOk.BackColor = [System.Drawing.Color]::FromArgb(30, 136, 229)
+    $btnOk.ForeColor = [System.Drawing.Color]::White
+    $btnOk.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $dialog.Controls.Add($btnOk)
+
+    $btnCancel = New-Object System.Windows.Forms.Button
+    $btnCancel.Text = '取消'
+    $btnCancel.Size = New-Object System.Drawing.Size(90, 34)
+    $btnCancel.Location = New-Object System.Drawing.Point(636, 452)
+    $btnCancel.Anchor = 'Bottom,Right'
+    $btnCancel.FlatStyle = 'Flat'
+    $btnCancel.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+    $dialog.Controls.Add($btnCancel)
+
+    $btnSelectAll.Add_Click({
+        for ($i = 0; $i -lt $listBox.Items.Count; $i++) {
+            $listBox.SetItemChecked($i, $true)
+        }
+    })
+
+    $btnClearAll.Add_Click({
+        for ($i = 0; $i -lt $listBox.Items.Count; $i++) {
+            $listBox.SetItemChecked($i, $false)
+        }
+    })
+
+    $btnOk.Add_Click({
+        if ($listBox.CheckedItems.Count -eq 0) {
+            Show-WarningMessage '请至少勾选一位收件人。'
+            $dialog.DialogResult = [System.Windows.Forms.DialogResult]::None
+            return
+        }
+    })
+
+    $dialog.AcceptButton = $btnOk
+    $dialog.CancelButton = $btnCancel
+
+    if ($dialog.ShowDialog($form) -ne [System.Windows.Forms.DialogResult]::OK) {
+        return @()
+    }
+
+    return @($listBox.CheckedItems | ForEach-Object { $_.Recipient })
 }
 
 function New-InventoryMailBatchItem {
@@ -452,15 +1111,8 @@ function Start-InventoryMailCheck {
         return
     }
 
-    $confirmMessage = @(
-        "即将为 $($validRecipients.Count) 位同事打开默认邮件客户端的盘点邮件撰写窗口。"
-        "将跳过 $($skippedRecipients.Count) 位邮箱异常或人员信息缺失的同事。"
-        ''
-        '是否继续？'
-    ) -join [Environment]::NewLine
-
-    $confirmResult = [System.Windows.Forms.MessageBox]::Show($confirmMessage,'确认打开邮件盘点',[System.Windows.Forms.MessageBoxButtons]::YesNo,[System.Windows.Forms.MessageBoxIcon]::Question)
-    if ($confirmResult -ne [System.Windows.Forms.DialogResult]::Yes) { return }
+    $selectedRecipients = @(Select-InventoryMailRecipients -Recipients $validRecipients -SkippedRecipients $skippedRecipients)
+    if ($selectedRecipients.Count -eq 0) { return }
 
     $createdAt = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
     $subjectTemplate = Get-InventoryMailSubject
@@ -468,8 +1120,8 @@ function Start-InventoryMailCheck {
     $createdItems = @()
     $failedItems = @()
 
-    foreach ($recipient in $validRecipients) {
-        $body = Get-InventoryMailBody -Colleague $recipient.colleague -Computers $recipient.computers
+    foreach ($recipient in $selectedRecipients) {
+        $body = Get-InventoryMailBody -Recipient $recipient
         $draftResult = Open-DefaultMailDraft -To ([string]$recipient.email) -Subject $subjectTemplate -Body $body
         if ($draftResult.Success) {
             $draftCreatedAt = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
@@ -587,7 +1239,7 @@ function Request-EditAuthorization {
 
     $result = $dialog.ShowDialog($form)
     if ($result -ne [System.Windows.Forms.DialogResult]::OK) { return $false }
-    if ($passwordBox.Text -ne '123456') {
+    if ($passwordBox.Text -ne '1') {
         Show-WarningMessage -Title '授权失败' -Message '密码不正确，未保存修改。'
         return $false
     }
@@ -600,8 +1252,6 @@ function Test-ComputerFieldValues {
 
     if ([string]::IsNullOrWhiteSpace($Name)) { Show-WarningMessage '请输入电脑名称。'; return $false }
     if ([string]::IsNullOrWhiteSpace($Serial)) { Show-WarningMessage '请输入序列号。'; return $false }
-    if ([string]::IsNullOrWhiteSpace($Asset)) { Show-WarningMessage '请输入固定资产号。'; return $false }
-    if ([string]::IsNullOrWhiteSpace($Mac)) { Show-WarningMessage '请输入 MAC 地址。'; return $false }
     return $true
 }
 
@@ -691,9 +1341,9 @@ function Get-FilteredComputers {
             id = [string]$item.id
             computer_name = [string]$item.computer_name
             serial_number = [string]$item.serial_number
-            asset_number = [string]$item.asset_number
+            asset_number = Get-AssetNumberDisplay -AssetNumber ([string]$item.asset_number)
             model = [string]$item.model
-            mac_address = [string]$item.mac_address
+            mac_address = Get-MacAddressDisplay -MacAddress ([string]$item.mac_address)
             owner_id = [string]$item.owner_id
             owner_name = Get-OwnerLabel -OwnerId ([string]$item.owner_id)
             remark = [string]$item.remark
@@ -828,9 +1478,9 @@ function Fill-ComputerForm {
     $script:CurrentComputerId = [string]$record.id
     $txtName.Text = [string]$record.computer_name
     $txtSerial.Text = [string]$record.serial_number
-    $txtAsset.Text = [string]$record.asset_number
+    $txtAsset.Text = if ([string]::IsNullOrWhiteSpace((Normalize-AssetNumberInput -AssetNumber ([string]$record.asset_number)))) { '暂无' } else { [string]$record.asset_number }
     $cmbModel.Text = [string]$record.model
-    $txtMac.Text = [string]$record.mac_address
+    $txtMac.Text = if ([string]::IsNullOrWhiteSpace((Normalize-MacAddressInput -MacAddress ([string]$record.mac_address)))) { '暂无' } else { [string]$record.mac_address }
     $txtRemark.Text = [string]$record.remark
     Set-SelectedOwner -Colleague (Get-ColleagueById -Id ([string]$record.owner_id))
     $lblMode.Text = '当前模式：编辑'
@@ -843,18 +1493,22 @@ function Validate-ComputerInput {
 function Save-ComputerRecord {
     if (-not (Validate-ComputerInput)) { return }
 
+    $isEditMode = -not [string]::IsNullOrWhiteSpace($script:CurrentComputerId)
     $name = $txtName.Text.Trim()
     $serial = $txtSerial.Text.Trim()
-    $asset = $txtAsset.Text.Trim()
+    $asset = Normalize-AssetNumberInput -AssetNumber $txtAsset.Text
     $model = $cmbModel.Text.Trim()
-    $mac = $txtMac.Text.Trim()
+    $mac = Normalize-MacAddressInput -MacAddress $txtMac.Text
     $remark = $txtRemark.Text.Trim()
     $now = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
 
     $duplicate = $script:Computers | Where-Object {
         $_.id -ne $script:CurrentComputerId -and (
             [string]$_.serial_number -eq $serial -or
-            [string]$_.asset_number -eq $asset
+            (
+                -not [string]::IsNullOrWhiteSpace($asset) -and
+                (Normalize-AssetNumberInput -AssetNumber ([string]$_.asset_number)) -eq $asset
+            )
         )
     } | Select-Object -First 1
 
@@ -863,7 +1517,7 @@ function Save-ComputerRecord {
         return
     }
 
-    if ([string]::IsNullOrWhiteSpace($script:CurrentComputerId)) {
+    if (-not $isEditMode) {
         $history = @()
         if (-not [string]::IsNullOrWhiteSpace($script:SelectedOwnerId)) {
             $history = @([PSCustomObject]@{
@@ -909,7 +1563,9 @@ function Save-ComputerRecord {
     Refresh-ModelOptions
     Refresh-ComputerGrid
     Clear-ComputerForm
-    Show-InfoMessage '保存成功。'
+    if (-not $isEditMode) {
+        Show-InfoMessage '保存成功。'
+    }
 }
 
 function Remove-SelectedComputer {
@@ -1027,9 +1683,9 @@ function Export-Computers {
         [PSCustomObject]@{
             '电脑名称' = [string]$item.computer_name
             '序列号' = [string]$item.serial_number
-            '固定资产号' = [string]$item.asset_number
+            '固定资产号' = Get-AssetNumberDisplay -AssetNumber ([string]$item.asset_number)
             '型号' = [string]$item.model
-            'MAC地址' = [string]$item.mac_address
+            'MAC地址' = Get-MacAddressDisplay -MacAddress ([string]$item.mac_address)
             '归属人' = Get-OwnerLabel -OwnerId ([string]$item.owner_id)
             '备注' = [string]$item.remark
             '更新时间' = [string]$item.updated_at
@@ -1197,8 +1853,14 @@ function Open-InventoryManager {
     $groupForm.Controls.Add((New-InventoryLabel -Text '序列号' -Y 168))
     $txtSerialInv = New-InventoryTextbox -Y 192
     $groupForm.Controls.Add($txtSerialInv)
-    $groupForm.Controls.Add((New-InventoryLabel -Text '固定资产号' -Y 224))
-    $txtAssetInv = New-InventoryTextbox -Y 248
+    $groupForm.Controls.Add((New-InventoryLabel -Text '固定资产号（可手填或选暂无）' -Y 224))
+    $txtAssetInv = New-Object System.Windows.Forms.ComboBox
+    $txtAssetInv.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10)
+    $txtAssetInv.Location = New-Object System.Drawing.Point(20, 248)
+    $txtAssetInv.Size = New-Object System.Drawing.Size(430, 28)
+    $txtAssetInv.Anchor = 'Top,Left,Right'
+    $txtAssetInv.DropDownStyle = 'DropDown'
+    [void]$txtAssetInv.Items.Add('暂无')
     $groupForm.Controls.Add($txtAssetInv)
     $groupForm.Controls.Add((New-InventoryLabel -Text '型号（可选可填）' -Y 280))
 
@@ -1210,25 +1872,33 @@ function Open-InventoryManager {
     $cmbModelInv.DropDownStyle = 'DropDown'
     $groupForm.Controls.Add($cmbModelInv)
 
-    $groupForm.Controls.Add((New-InventoryLabel -Text 'MAC 地址' -Y 336))
-    $txtMacInv = New-InventoryTextbox -Y 360
+    $groupForm.Controls.Add((New-InventoryLabel -Text 'MAC 地址（可手填或选暂无）' -Y 336))
+    $txtMacInv = New-Object System.Windows.Forms.ComboBox
+    $txtMacInv.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10)
+    $txtMacInv.Location = New-Object System.Drawing.Point(20, 360)
+    $txtMacInv.Size = New-Object System.Drawing.Size(430, 28)
+    $txtMacInv.Anchor = 'Top,Left,Right'
+    $txtMacInv.DropDownStyle = 'DropDown'
+    [void]$txtMacInv.Items.Add('暂无')
     $groupForm.Controls.Add($txtMacInv)
-    $groupForm.Controls.Add((New-InventoryLabel -Text '归属同事（输入拼音匹配，可留空）' -Y 392))
-    $txtOwnerInv = New-InventoryTextbox -Y 416
+    $lblOwnerInv = New-InventoryLabel -Text '归属同事（输入拼音匹配，可留空）' -Y 392
+    $lblOwnerInv.Size = New-Object System.Drawing.Size(430, 36)
+    $groupForm.Controls.Add($lblOwnerInv)
+    $txtOwnerInv = New-InventoryTextbox -Y 428
     $groupForm.Controls.Add($txtOwnerInv)
 
     $lstOwnerSuggestionsInv = New-Object System.Windows.Forms.ListBox
     $lstOwnerSuggestionsInv.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 9)
-    $lstOwnerSuggestionsInv.Location = New-Object System.Drawing.Point(20, 446)
+    $lstOwnerSuggestionsInv.Location = New-Object System.Drawing.Point(20, 458)
     $lstOwnerSuggestionsInv.Size = New-Object System.Drawing.Size(430, 72)
     $lstOwnerSuggestionsInv.Anchor = 'Top,Left,Right'
     $lstOwnerSuggestionsInv.Visible = $false
     $groupForm.Controls.Add($lstOwnerSuggestionsInv)
 
-    $groupForm.Controls.Add((New-InventoryLabel -Text '备注' -Y 526))
+    $groupForm.Controls.Add((New-InventoryLabel -Text '备注' -Y 538))
     $txtRemarkInv = New-Object System.Windows.Forms.TextBox
     $txtRemarkInv.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10)
-    $txtRemarkInv.Location = New-Object System.Drawing.Point(20, 550)
+    $txtRemarkInv.Location = New-Object System.Drawing.Point(20, 562)
     $txtRemarkInv.Size = New-Object System.Drawing.Size(430, 120)
     $txtRemarkInv.Multiline = $true
     $txtRemarkInv.ScrollBars = 'Vertical'
@@ -1319,9 +1989,9 @@ function Open-InventoryManager {
                 id = [string]$item.id
                 computer_name = [string]$item.computer_name
                 serial_number = [string]$item.serial_number
-                asset_number = [string]$item.asset_number
+                asset_number = Get-AssetNumberDisplay -AssetNumber ([string]$item.asset_number)
                 model = [string]$item.model
-                mac_address = [string]$item.mac_address
+                mac_address = Get-MacAddressDisplay -MacAddress ([string]$item.mac_address)
                 remark = [string]$item.remark
                 updated_at = [string]$item.updated_at
             }
@@ -1378,9 +2048,9 @@ function Open-InventoryManager {
         $script:CurrentInventoryComputerId = [string]$record.id
         $txtNameInv.Text = [string]$record.computer_name
         $txtSerialInv.Text = [string]$record.serial_number
-        $txtAssetInv.Text = [string]$record.asset_number
+        $txtAssetInv.Text = if ([string]::IsNullOrWhiteSpace((Normalize-AssetNumberInput -AssetNumber ([string]$record.asset_number)))) { '暂无' } else { [string]$record.asset_number }
         $cmbModelInv.Text = [string]$record.model
-        $txtMacInv.Text = [string]$record.mac_address
+        $txtMacInv.Text = if ([string]::IsNullOrWhiteSpace((Normalize-MacAddressInput -MacAddress ([string]$record.mac_address)))) { '暂无' } else { [string]$record.mac_address }
         Set-InventorySelectedOwner -Colleague (Get-ColleagueById -Id ([string]$record.owner_id))
         $txtRemarkInv.Text = [string]$record.remark
         $lblModeInv.Text = '当前模式：编辑'
@@ -1389,11 +2059,12 @@ function Open-InventoryManager {
     function Save-InventoryComputer {
         if (-not (Test-ComputerFieldValues -Name $txtNameInv.Text -Serial $txtSerialInv.Text -Asset $txtAssetInv.Text -Mac $txtMacInv.Text)) { return }
 
+        $isEditMode = -not [string]::IsNullOrWhiteSpace([string]$script:CurrentInventoryComputerId)
         $name = $txtNameInv.Text.Trim()
         $serial = $txtSerialInv.Text.Trim()
-        $asset = $txtAssetInv.Text.Trim()
+        $asset = Normalize-AssetNumberInput -AssetNumber $txtAssetInv.Text
         $model = $cmbModelInv.Text.Trim()
-        $mac = $txtMacInv.Text.Trim()
+        $mac = Normalize-MacAddressInput -MacAddress $txtMacInv.Text
         $ownerText = $txtOwnerInv.Text.Trim()
         $ownerId = [string]$selectedInventoryOwnerId
         if (-not [string]::IsNullOrWhiteSpace($ownerText) -and [string]::IsNullOrWhiteSpace($ownerId)) {
@@ -1418,7 +2089,10 @@ function Open-InventoryManager {
         $duplicate = $script:Computers | Where-Object {
             $_.id -ne $targetInventoryId -and (
                 [string]$_.serial_number -eq $serial -or
-                [string]$_.asset_number -eq $asset
+                (
+                    -not [string]::IsNullOrWhiteSpace($asset) -and
+                    (Normalize-AssetNumberInput -AssetNumber ([string]$_.asset_number)) -eq $asset
+                )
             )
         } | Select-Object -First 1
 
@@ -1475,6 +2149,11 @@ function Open-InventoryManager {
         Refresh-InventoryModelOptions
         Refresh-ComputerGrid
         Refresh-InventoryGrid
+
+        if ($isEditMode) {
+            Clear-InventoryForm
+            return
+        }
 
         if ([string]::IsNullOrWhiteSpace($ownerId)) {
             Clear-InventoryForm
@@ -2029,20 +2708,20 @@ if (Test-Path $logoPath) {
 $title = New-Object System.Windows.Forms.Label
 $title.Text = 'ITK China 电脑信息管理系统'
 $title.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 18, [System.Drawing.FontStyle]::Bold)
-$title.Location = New-Object System.Drawing.Point(152, 14)
-$title.Size = New-Object System.Drawing.Size(520, 40)
+$title.Location = New-Object System.Drawing.Point(152, 12)
+$title.Size = New-Object System.Drawing.Size(560, 46)
 $form.Controls.Add($title)
 
 $subtitle = New-Object System.Windows.Forms.Label
 $subtitle.Text = 'ITK China 设备资产、人员与库存电脑管理平台'
 $subtitle.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 9)
 $subtitle.ForeColor = [System.Drawing.Color]::FromArgb(95, 99, 104)
-$subtitle.Location = New-Object System.Drawing.Point(154, 50)
-$subtitle.Size = New-Object System.Drawing.Size(520, 24)
+$subtitle.Location = New-Object System.Drawing.Point(154, 58)
+$subtitle.Size = New-Object System.Drawing.Size(560, 24)
 $form.Controls.Add($subtitle)
 
 $splitMain = New-Object System.Windows.Forms.SplitContainer
-$splitMain.Location = New-Object System.Drawing.Point(20, 95)
+$splitMain.Location = New-Object System.Drawing.Point(20, 103)
 $splitMain.Size = New-Object System.Drawing.Size(1460, 720)
 $splitMain.Anchor = 'Top,Bottom,Left,Right'
 $splitMain.FixedPanel = 'Panel2'
@@ -2096,6 +2775,20 @@ $btnInventoryMail.Size = New-Object System.Drawing.Size(96, 32)
 $btnInventoryMail.FlatStyle = 'Flat'
 $btnInventoryMail.Anchor = 'Top,Right'
 $groupList.Controls.Add($btnInventoryMail)
+
+$btnCloudBackup = New-Object System.Windows.Forms.Button
+$btnCloudBackup.Text = '云端备份'
+$btnCloudBackup.Size = New-Object System.Drawing.Size(96, 32)
+$btnCloudBackup.FlatStyle = 'Flat'
+$btnCloudBackup.Anchor = 'Top,Right'
+$groupList.Controls.Add($btnCloudBackup)
+
+$btnCloudRestore = New-Object System.Windows.Forms.Button
+$btnCloudRestore.Text = '拉取云端'
+$btnCloudRestore.Size = New-Object System.Drawing.Size(96, 32)
+$btnCloudRestore.FlatStyle = 'Flat'
+$btnCloudRestore.Anchor = 'Top,Right'
+$groupList.Controls.Add($btnCloudRestore)
 
 $btnColleagueManager = New-Object System.Windows.Forms.Button
 $btnColleagueManager.Text = '人员名单管理'
@@ -2211,8 +2904,14 @@ $groupForm.Controls.Add($txtName)
 $groupForm.Controls.Add((New-EditorLabel -Text '序列号' -Y 124))
 $txtSerial = New-EditorTextbox -Y 148
 $groupForm.Controls.Add($txtSerial)
-$groupForm.Controls.Add((New-EditorLabel -Text '固定资产号' -Y 180))
-$txtAsset = New-EditorTextbox -Y 204
+$groupForm.Controls.Add((New-EditorLabel -Text '固定资产号（可手填或选暂无）' -Y 180))
+$txtAsset = New-Object System.Windows.Forms.ComboBox
+$txtAsset.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10)
+$txtAsset.Location = New-Object System.Drawing.Point(20, 204)
+$txtAsset.Size = New-Object System.Drawing.Size(430, 28)
+$txtAsset.Anchor = 'Top,Left,Right'
+$txtAsset.DropDownStyle = 'DropDown'
+[void]$txtAsset.Items.Add('暂无')
 $groupForm.Controls.Add($txtAsset)
 $groupForm.Controls.Add((New-EditorLabel -Text '型号（可选可填）' -Y 236))
 
@@ -2224,25 +2923,33 @@ $cmbModel.Anchor = 'Top,Left,Right'
 $cmbModel.DropDownStyle = 'DropDown'
 $groupForm.Controls.Add($cmbModel)
 
-$groupForm.Controls.Add((New-EditorLabel -Text 'MAC 地址' -Y 292))
-$txtMac = New-EditorTextbox -Y 316
+$groupForm.Controls.Add((New-EditorLabel -Text 'MAC 地址（可手填或选暂无）' -Y 292))
+$txtMac = New-Object System.Windows.Forms.ComboBox
+$txtMac.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10)
+$txtMac.Location = New-Object System.Drawing.Point(20, 316)
+$txtMac.Size = New-Object System.Drawing.Size(430, 28)
+$txtMac.Anchor = 'Top,Left,Right'
+$txtMac.DropDownStyle = 'DropDown'
+[void]$txtMac.Items.Add('暂无')
 $groupForm.Controls.Add($txtMac)
-$groupForm.Controls.Add((New-EditorLabel -Text '归属人（输入拼音匹配，可留空表示库存）' -Y 348))
-$txtOwner = New-EditorTextbox -Y 372
+$lblOwner = New-EditorLabel -Text '归属人（输入拼音匹配，可留空表示库存）' -Y 348
+$lblOwner.Size = New-Object System.Drawing.Size(430, 36)
+$groupForm.Controls.Add($lblOwner)
+$txtOwner = New-EditorTextbox -Y 384
 $groupForm.Controls.Add($txtOwner)
 
 $lstOwnerSuggestions = New-Object System.Windows.Forms.ListBox
 $lstOwnerSuggestions.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 9)
-$lstOwnerSuggestions.Location = New-Object System.Drawing.Point(20, 402)
+$lstOwnerSuggestions.Location = New-Object System.Drawing.Point(20, 414)
 $lstOwnerSuggestions.Size = New-Object System.Drawing.Size(430, 72)
 $lstOwnerSuggestions.Anchor = 'Top,Left,Right'
 $lstOwnerSuggestions.Visible = $false
 $groupForm.Controls.Add($lstOwnerSuggestions)
 
-$groupForm.Controls.Add((New-EditorLabel -Text '备注' -Y 482))
+$groupForm.Controls.Add((New-EditorLabel -Text '备注' -Y 494))
 $txtRemark = New-Object System.Windows.Forms.TextBox
 $txtRemark.Font = New-Object System.Drawing.Font('Microsoft YaHei UI', 10)
-$txtRemark.Location = New-Object System.Drawing.Point(20, 506)
+$txtRemark.Location = New-Object System.Drawing.Point(20, 518)
 $txtRemark.Size = New-Object System.Drawing.Size(430, 120)
 $txtRemark.Multiline = $true
 $txtRemark.ScrollBars = 'Vertical'
@@ -2273,14 +2980,21 @@ function Update-MainLayout {
     $panelHeight = [int]$groupForm.ClientRectangle.Height
     $editorWidth = $panelWidth - 40
 
-    $btnColleagueManager.Location = New-Object System.Drawing.Point(($listWidth - 138), $toolbarY)
-    $btnInventoryMail.Location = New-Object System.Drawing.Point(($btnColleagueManager.Left - 104), $toolbarY)
-    $btnInventoryManager.Location = New-Object System.Drawing.Point(($btnInventoryMail.Left - 128), $toolbarY)
-    $btnExport.Location = New-Object System.Drawing.Point(($btnInventoryManager.Left - 104), $toolbarY)
-    $btnDelete.Location = New-Object System.Drawing.Point(($btnExport.Left - 118), $toolbarY)
-    $btnSearch.Location = New-Object System.Drawing.Point(($btnDelete.Left - 90), $toolbarY)
+    $leftX = 18
+    $buttonGap = 8
 
-    $txtSearch.Width = [Math]::Max(120, ($btnSearch.Left - 36))
+    $txtSearch.Location = New-Object System.Drawing.Point($leftX, 35)
+    $txtSearch.Width = 120
+
+    $btnSearch.Location = New-Object System.Drawing.Point(($txtSearch.Right + $buttonGap), $toolbarY)
+    $btnDelete.Location = New-Object System.Drawing.Point(($btnSearch.Right + $buttonGap), $toolbarY)
+    $btnExport.Location = New-Object System.Drawing.Point(($btnDelete.Right + $buttonGap), $toolbarY)
+    $btnInventoryManager.Location = New-Object System.Drawing.Point(($btnExport.Right + $buttonGap), $toolbarY)
+    $btnInventoryMail.Location = New-Object System.Drawing.Point(($btnInventoryManager.Right + $buttonGap), $toolbarY)
+    $btnCloudBackup.Location = New-Object System.Drawing.Point(($btnInventoryMail.Right + $buttonGap), $toolbarY)
+    $btnCloudRestore.Location = New-Object System.Drawing.Point(($btnCloudBackup.Right + $buttonGap), $toolbarY)
+    $btnColleagueManager.Location = New-Object System.Drawing.Point(($btnCloudRestore.Right + $buttonGap), $toolbarY)
+
     $lblCount.Location = New-Object System.Drawing.Point(($listWidth - 350), 68)
     $lblCount.Size = New-Object System.Drawing.Size(332, 20)
     $splitComputerLists.Size = New-Object System.Drawing.Size(($listWidth - 36), ($listHeight - 110))
@@ -2313,6 +3027,8 @@ $btnDelete.Add_Click({ Remove-SelectedComputer })
 $btnExport.Add_Click({ Export-Computers })
 $btnInventoryManager.Add_Click({ Open-InventoryManager })
 $btnInventoryMail.Add_Click({ Start-InventoryMailCheck })
+$btnCloudBackup.Add_Click({ Invoke-CloudBackupUpload })
+$btnCloudRestore.Add_Click({ Invoke-CloudBackupDownload })
 $btnColleagueManager.Add_Click({ Open-ColleagueManager })
 $btnOwnerHistory.Add_Click({ Show-OwnerHistory })
 $gridInUse.Add_SelectionChanged({
@@ -2339,7 +3055,7 @@ $lstOwnerSuggestions.Add_DoubleClick({ if ($null -ne $lstOwnerSuggestions.Select
 $lstOwnerSuggestions.Add_Click({ if ($null -ne $lstOwnerSuggestions.SelectedItem) { Set-SelectedOwner -Colleague (Get-ColleagueById -Id ([string]$lstOwnerSuggestions.SelectedItem.Id)) } })
 $lstOwnerSuggestions.Add_KeyDown({ param($sender, $e) if ($e.KeyCode -eq [System.Windows.Forms.Keys]::Enter -and $null -ne $lstOwnerSuggestions.SelectedItem) { Set-SelectedOwner -Colleague (Get-ColleagueById -Id ([string]$lstOwnerSuggestions.SelectedItem.Id)); $e.Handled = $true } })
 
-$form.Add_Shown({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSize 420 -DesiredSplitterDistance 950; Update-MainLayout; Load-AllData; Refresh-ModelOptions; Refresh-ComputerGrid; Clear-ComputerForm })
+$form.Add_Shown({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSize 420 -DesiredSplitterDistance 950; Update-MainLayout; Load-AllData; Refresh-ModelOptions; Refresh-ComputerGrid; Clear-ComputerForm; Check-CloudBackupVersionOnStartup })
 $form.Add_Resize({ Set-SafeSplitterLayout -SplitContainer $splitMain -Panel2MinSize 420 -DesiredSplitterDistance 950; Update-MainLayout })
 
 [void]$form.ShowDialog()

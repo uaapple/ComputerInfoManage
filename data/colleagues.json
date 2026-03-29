@@ -2,8 +2,8 @@
     {
         "id":  "a3b49d90-7a51-43b1-babf-be125413cc3d",
         "display_name":  "李瑾",
-        "pinyin":  "li jing",
-        "email":  "jing.li@itk-engineering.com",
+        "pinyin":  "li jin",
+        "email":  "jin.li@itk-engineering.com",
         "department":  "BSW",
         "employee_type":  "实习生",
         "mentor_id":  "752813bf-cb94-4f60-9d3b-585440a1c52e"
@@ -419,6 +419,141 @@
         "pinyin":  "wu qiang",
         "email":  "qiang.wu@itk-engineering.com",
         "department":  "IMC",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "fd48322c-f2f1-4fe3-af9b-9698ef392bf7",
+        "display_name":  "姚进峰",
+        "pinyin":  "yao jinfeng",
+        "email":  "Jinfeng.Yao@itk-engineering.com",
+        "department":  "VCU",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "2be6fcf9-28ba-4f2c-9168-6b2e2d505781",
+        "display_name":  "冯海峰",
+        "pinyin":  "feng haifeng",
+        "email":  "Haifeng.Feng@itk-engineering.com",
+        "department":  "ENG",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "be2e2823-d349-43d6-b03e-c7d25678cd09",
+        "display_name":  "何涛",
+        "pinyin":  "he tao",
+        "email":  "Tao.He@itk-engineering.com",
+        "department":  "VCU",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "a3063947-a8cc-4873-9ec4-e851590695c6",
+        "display_name":  "吴量",
+        "pinyin":  "wu liang",
+        "email":  "Liang.Wu@itk-engineering.com",
+        "department":  "BSW",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "4ef340d7-ee80-474d-b058-51137851611a",
+        "display_name":  "韩志伟",
+        "pinyin":  "han zhiwei",
+        "email":  "Zhiwei.Han@itk-engineering.com",
+        "department":  "BSW",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "3f75369f-00a2-424b-802d-e0b661c1686f",
+        "display_name":  "陶家齐",
+        "pinyin":  "tao jiaqi",
+        "email":  "Jiaqi.Tao@itk-engineering.com",
+        "department":  "TMS",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "624d3e7c-41f3-4cce-93bc-ad1edd45211e",
+        "display_name":  "汪桐桐",
+        "pinyin":  "wang tongtong",
+        "email":  "Tongtong.Wang@itk-engineering.com",
+        "department":  "BSW",
+        "employee_type":  "实习生",
+        "mentor_id":  "6906652d-d002-4735-86dd-9ad26ce2e3e0"
+    },
+    {
+        "id":  "9e529e8a-839a-42cd-8b51-a948cb17dace",
+        "display_name":  "张运卓",
+        "pinyin":  "zhang yunzhuo",
+        "email":  "Yunzhuo.Zhang@itk-engineering.com",
+        "department":  "IMC",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "d4028b01-4464-4c06-8fd2-44509b91de40",
+        "display_name":  "吴忠卫",
+        "pinyin":  "wu zhongwei",
+        "email":  "Zhongwei.Wu@itk-engineering.com",
+        "department":  "STV",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "3c142bbc-c655-4f28-ac21-3b9072683c67",
+        "display_name":  "朱宸辉",
+        "pinyin":  "zhu chenhui",
+        "email":  "Chenhui.Zhu@itk-engineering.com",
+        "department":  "BSW",
+        "employee_type":  "实习生",
+        "mentor_id":  "637aa48e-b30b-4fc9-9075-2a8f1708866c"
+    },
+    {
+        "id":  "38847122-8d9c-4a2e-bae3-7cf88308b5c9",
+        "display_name":  "司小夏",
+        "pinyin":  "si xiaoxia",
+        "email":  "Xiaoxia.Si@itk-engineering.com",
+        "department":  "VCU",
+        "employee_type":  "实习生",
+        "mentor_id":  "be2e2823-d349-43d6-b03e-c7d25678cd09"
+    },
+    {
+        "id":  "a1e336e9-5997-4a4e-91c5-e2fc046df150",
+        "display_name":  "谭子航",
+        "pinyin":  "tan zihang",
+        "email":  "Zihang.Tan@itk-engineering.com",
+        "department":  "BSW",
+        "employee_type":  "实习生",
+        "mentor_id":  "0e78427b-97ff-4a72-9088-8baffe014987"
+    },
+    {
+        "id":  "7a145174-a014-4640-87b3-3d2947f6314f",
+        "display_name":  "许鑫晨",
+        "pinyin":  "xu xinchen",
+        "email":  "Xinchen.xu@itk-engineering.com",
+        "department":  "VCU",
+        "employee_type":  "实习生",
+        "mentor_id":  "5d25e338-2be3-440c-82ed-5a31d6fa859d"
+    },
+    {
+        "id":  "63a46fcd-2b21-4d13-b72f-8dfb43bd1631",
+        "display_name":  "Aaron Xu",
+        "pinyin":  "aaron xu",
+        "email":  "Aaron.Xu@itk-engineering.com",
+        "department":  "SAL",
+        "employee_type":  "正式员工",
+        "mentor_id":  ""
+    },
+    {
+        "id":  "11633aac-23b4-4a76-9526-ee89bd456f4e",
+        "display_name":  "雷杰",
+        "pinyin":  "lei jie",
+        "email":  "Jie.Lei@itk-engineering.com",
+        "department":  "BSW",
         "employee_type":  "正式员工",
         "mentor_id":  ""
     }
