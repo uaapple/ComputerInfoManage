@@ -8,7 +8,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8099);
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, "web");
-const DATA_DIR = path.join(ROOT, "data");
+const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(ROOT, "data"));
 const EDIT_PASSWORD = "1";
 
 function nowString() {

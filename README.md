@@ -98,6 +98,34 @@ node .\web-server.js
 
 - `http://127.0.0.1:8099`
 
+## 打包与部署
+
+推荐使用仓库内置的 PowerShell 脚本做“本机打包、虚拟机一键部署”：
+
+### 本机打包
+
+```powershell
+.\scripts\package-web-release.ps1
+```
+
+### 虚拟机部署
+
+把生成的 zip 包拷到虚拟机后执行：
+
+```powershell
+.\scripts\deploy-web-release.ps1 -PackagePath "D:\ITK-Deploy\ComputerInfoManage-web-xxx.zip"
+```
+
+如果要注册成 Windows Service，推荐配合 NSSM：
+
+```powershell
+.\scripts\install-web-service.ps1 -InstallRoot "D:\ITK-ComputerInfoManage" -NssmPath "D:\tools\nssm\nssm.exe"
+```
+
+更完整说明见：
+
+- [docs/deployment.md](./docs/deployment.md)
+
 ## 当前重要业务规则
 
 - 归属人在数据内部以人员 ID 存储，界面显示中文名
