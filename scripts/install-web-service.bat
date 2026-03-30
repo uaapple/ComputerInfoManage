@@ -1,8 +1,8 @@
 @echo off
 cd /d "%~dp0\.."
 
-set INSTALL_ROOT=D:\ITK-ComputerInfoManage
-set NSSM_PATH=D:\tools\nssm\nssm.exe
+set INSTALL_ROOT=C:\Apps\LaptopsInfo
+set NSSM_PATH=C:\Apps\LaptopsInfo\tools\nssm\nssm.exe
 
 echo.
 echo This will install or update the Windows service.

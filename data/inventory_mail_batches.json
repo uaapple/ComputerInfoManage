@@ -909,5 +909,101 @@
         "draft_created_at": "2026-03-29 16:22:28"
       }
     ]
+  },
+  {
+    "id": "3e6f65fb-9b9d-4678-89fb-baa3192c5227",
+    "created_at": "2026-03-30 10:04:23",
+    "status": "draft_created",
+    "recipient_count": 1,
+    "skipped_count": 0,
+    "subject_template": "[电脑盘点] 请确认您名下电脑信息",
+    "items": [
+      {
+        "colleague_id": "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+        "display_name": "陈妤",
+        "email": "yu.chen@itk-engineering.com",
+        "computer_ids": [
+          "8197e220-2ca0-4ed9-abfc-cb7e749ccd52",
+          "a340edbf-70c9-4890-85b1-8319f7687c55"
+        ],
+        "computer_snapshot": [
+          {
+            "id": "8197e220-2ca0-4ed9-abfc-cb7e749ccd52",
+            "computer_name": "5CG4213C73",
+            "serial_number": "5CG4213C73",
+            "asset_number": "932000000067",
+            "model": "HP Zbook Fury 16 G10",
+            "mac_address": "30-13-8B-E7-1A-6F",
+            "owner_id": "624d3e7c-41f3-4cce-93bc-ad1edd45211e",
+            "owner_name": "汪桐桐",
+            "remark": "",
+            "updated_at": "2026-03-25 04:30:03"
+          },
+          {
+            "id": "a340edbf-70c9-4890-85b1-8319f7687c55",
+            "computer_name": "5CG4213C74",
+            "serial_number": "5CG4213C74",
+            "asset_number": "932000000068",
+            "model": "HP Zbook Fury 16 G10",
+            "mac_address": "30-13-8B-E7-1A-47",
+            "owner_id": "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+            "owner_name": "陈妤",
+            "remark": "",
+            "updated_at": "2026-03-25 03:35:55"
+          }
+        ],
+        "result": "draft_created",
+        "result_message": "已打开默认邮件客户端的撰写窗口。",
+        "draft_created_at": "2026-03-30 10:04:23"
+      }
+    ]
+  },
+  {
+    "id": "db362643-24fe-4dc6-9074-89ebf86a4f3c",
+    "created_at": "2026-03-30 10:50:15",
+    "status": "draft_created",
+    "recipient_count": 1,
+    "skipped_count": 0,
+    "subject_template": "[电脑盘点] 请确认您名下电脑信息",
+    "items": [
+      {
+        "colleague_id": "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+        "display_name": "陈妤",
+        "email": "yu.chen@itk-engineering.com",
+        "computer_ids": [
+          "8197e220-2ca0-4ed9-abfc-cb7e749ccd52",
+          "a340edbf-70c9-4890-85b1-8319f7687c55"
+        ],
+        "computer_snapshot": [
+          {
+            "id": "8197e220-2ca0-4ed9-abfc-cb7e749ccd52",
+            "computer_name": "5CG4213C73",
+            "serial_number": "5CG4213C73",
+            "asset_number": "932000000067",
+            "model": "HP Zbook Fury 16 G10",
+            "mac_address": "30-13-8B-E7-1A-6F",
+            "owner_id": "624d3e7c-41f3-4cce-93bc-ad1edd45211e",
+            "owner_name": "汪桐桐",
+            "remark": "",
+            "updated_at": "2026-03-25 04:30:03"
+          },
+          {
+            "id": "a340edbf-70c9-4890-85b1-8319f7687c55",
+            "computer_name": "5CG4213C74",
+            "serial_number": "5CG4213C74",
+            "asset_number": "932000000068",
+            "model": "HP Zbook Fury 16 G10",
+            "mac_address": "30-13-8B-E7-1A-47",
+            "owner_id": "6906652d-d002-4735-86dd-9ad26ce2e3e0",
+            "owner_name": "陈妤",
+            "remark": "",
+            "updated_at": "2026-03-25 03:35:55"
+          }
+        ],
+        "result": "draft_created",
+        "result_message": "已打开默认邮件客户端的撰写窗口。",
+        "draft_created_at": "2026-03-30 10:50:15"
+      }
+    ]
   }
 ]

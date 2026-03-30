@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-  [string]$InstallRoot = "D:\ITK-ComputerInfoManage",
+  [string]$InstallRoot = "C:\Apps\LaptopsInfo",
   [string]$ServiceName = "ITKComputerInfoManageWeb",
   [string]$NodePath = "",
   [string]$NssmPath = "",

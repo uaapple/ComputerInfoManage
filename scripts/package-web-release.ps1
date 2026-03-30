@@ -40,7 +40,7 @@ New-Item -ItemType Directory -Path $scriptsRoot | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $repoRoot "web-server.js") -Destination $appRoot
 Copy-Item -LiteralPath (Join-Path $repoRoot "package.json") -Destination $appRoot
-Copy-Item -LiteralPath (Join-Path $repoRoot "启动Web版预览.bat") -Destination $appRoot
+Copy-Item -LiteralPath (Join-Path $repoRoot "ITK_Logo_RGB.jpg") -Destination $appRoot
 Copy-Item -LiteralPath (Join-Path $repoRoot "web") -Destination $appRoot -Recurse
 
 Copy-Item -LiteralPath (Join-Path $repoRoot "README.md") -Destination $releaseRoot
@@ -82,12 +82,12 @@ Set-Content -LiteralPath (Join-Path $releaseRoot "VERSION.txt") -Value $versionT
 $manifest = [ordered]@{
   releaseName = $releaseName
   version = $baseVersion
-  buildTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  buildTime = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
   includeSeedData = [bool]$IncludeSeedData
   appFiles = @(
     "app\web-server.js",
     "app\package.json",
-    "app\启动Web版预览.bat",
+    "app\ITK_Logo_RGB.jpg",
     "app\web\index.html",
     "app\web\styles.css",
     "app\web\app.js"

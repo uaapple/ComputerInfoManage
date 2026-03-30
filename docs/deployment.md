@@ -10,7 +10,7 @@
 推荐目录：
 
 ```text
-D:\ITK-ComputerInfoManage\
+C:\Apps\LaptopsInfo\
 ├─ app\
 │  └─ current\
 ├─ data\
@@ -51,7 +51,7 @@ scripts\package-web-release.bat
 建议把 zip 包复制到虚拟机本地目录，例如：
 
 ```text
-D:\ITK-Deploy\
+C:\Apps\Deploy\
 ```
 
 ### 3. 在虚拟机上部署
@@ -59,7 +59,7 @@ D:\ITK-Deploy\
 如果是 zip 包：
 
 ```powershell
-.\scripts\deploy-web-release.ps1 -PackagePath "D:\ITK-Deploy\ComputerInfoManage-web-xxx.zip"
+.\scripts\deploy-web-release.ps1 -PackagePath "C:\Apps\Deploy\ComputerInfoManage-web-xxx.zip"
 ```
 
 也可以直接把 zip 拖到下面这个文件上：
@@ -71,7 +71,7 @@ scripts\deploy-web-release.bat
 如果是已经解压后的目录：
 
 ```powershell
-.\scripts\deploy-web-release.ps1 -PackageRoot "D:\ITK-Deploy\ComputerInfoManage-web-xxx"
+.\scripts\deploy-web-release.ps1 -PackageRoot "C:\Apps\Deploy\ComputerInfoManage-web-xxx"
 ```
 
 部署脚本会自动：
@@ -95,7 +95,7 @@ scripts\deploy-web-release.bat
 然后执行：
 
 ```powershell
-.\scripts\install-web-service.ps1 -InstallRoot "D:\ITK-ComputerInfoManage" -NssmPath "D:\tools\nssm\nssm.exe"
+.\scripts\install-web-service.ps1 -InstallRoot "C:\Apps\LaptopsInfo" -NssmPath "C:\Apps\LaptopsInfo\tools\nssm\nssm.exe"
 ```
 
 如果你已经把 `install-web-service.bat` 里的参数改成自己的环境，也可以直接双击它。
@@ -121,7 +121,7 @@ scripts\stop-web-service.bat
 服务启动时会读取环境变量 `DATA_DIR`，因此生产数据固定存放在：
 
 ```text
-D:\ITK-ComputerInfoManage\data
+C:\Apps\LaptopsInfo\data
 ```
 
 这意味着你以后升级代码时，不会把生产 JSON 数据覆盖掉。

@@ -1,0 +1,9 @@
+﻿{
+  "name": "itk-laptopsinfo-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ITK China web asset manager",
+  "scripts": {
+    "start:web": "node web-server.js"
+  }
+}

@@ -2,7 +2,7 @@
 param(
   [string]$PackagePath = "",
   [string]$PackageRoot = "",
-  [string]$InstallRoot = "D:\ITK-ComputerInfoManage",
+  [string]$InstallRoot = "C:\Apps\LaptopsInfo",
   [string]$ServiceName = "ITKComputerInfoManageWeb",
   [switch]$SkipServiceRestart
 )
