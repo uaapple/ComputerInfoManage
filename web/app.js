@@ -53,6 +53,7 @@ const mailAlert = document.getElementById("mail-alert");
 const mailHint = document.getElementById("mail-hint");
 const mailList = document.getElementById("mail-list");
 const mailSkipped = document.getElementById("mail-skipped");
+const mailResult = document.getElementById("mail-result");
 
 let workspaceResizeObserver = null;
 
@@ -315,6 +316,108 @@ function buildDataList(id, values) {
   `;
 }
 
+function normalizeLookupText(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function buildOwnerLookupItems() {
+  return state.options.colleagues.map((item) => {
+    const searchValues = [
+      item.displayName,
+      item.pinyin,
+      item.email,
+      item.department,
+      `${item.displayName} (${item.department})`,
+      item.label
+    ].filter(Boolean);
+
+    return {
+      id: item.id,
+      displayName: item.displayName,
+      label: `${item.displayName} (${item.department})`,
+      searchValues,
+      normalizedSet: new Set(searchValues.map((value) => normalizeLookupText(value)))
+    };
+  });
+}
+
+function searchOwnerCandidates(rawValue) {
+  const normalized = normalizeLookupText(rawValue);
+  if (!normalized || normalized === "库存") {
+    return [];
+  }
+
+  return buildOwnerLookupItems().filter((item) =>
+    item.searchValues.some((value) => normalizeLookupText(value).includes(normalized))
+  );
+}
+
+function resolveOwnerInputToId(rawValue, selectedId = "") {
+  const normalized = normalizeLookupText(rawValue);
+  if (!normalized || normalized === "库存") {
+    return { id: "", matched: true };
+  }
+
+  const lookupItems = buildOwnerLookupItems();
+  const selectedMatch = selectedId ? lookupItems.find((item) => item.id === selectedId) : null;
+  if (selectedMatch && selectedMatch.normalizedSet.has(normalized)) {
+    return { id: selectedMatch.id, matched: true };
+  }
+
+  const exactMatches = lookupItems.filter((item) => item.normalizedSet.has(normalized));
+  if (exactMatches.length === 1) {
+    return { id: exactMatches[0].id, matched: true };
+  }
+
+  const prefixMatches = lookupItems.filter((item) =>
+    item.searchValues.some((value) => normalizeLookupText(value).startsWith(normalized))
+  );
+  if (prefixMatches.length === 1) {
+    return { id: prefixMatches[0].id, matched: true };
+  }
+
+  const fuzzyMatches = lookupItems.filter((item) =>
+    item.searchValues.some((value) => normalizeLookupText(value).includes(normalized))
+  );
+  if (fuzzyMatches.length === 1) {
+    return { id: fuzzyMatches[0].id, matched: true };
+  }
+
+  return { id: "", matched: false };
+}
+
+function buildOwnerSuggestions(selectedId = "") {
+  const values = ["库存"];
+  const seen = new Set(values.map((value) => normalizeLookupText(value)));
+
+  state.options.colleagues.forEach((item) => {
+    const suggestionValues = [item.displayName, `${item.displayName} (${item.department})`, item.email, item.pinyin];
+    suggestionValues.forEach((value) => {
+      const normalized = normalizeLookupText(value);
+      if (!normalized || seen.has(normalized)) return;
+      seen.add(normalized);
+      values.push(value);
+    });
+  });
+
+  const selectedOwner = state.options.colleagues.find((item) => item.id === selectedId);
+  if (selectedOwner) {
+    const selectedLabel = `${selectedOwner.displayName} (${selectedOwner.department})`;
+    const normalized = normalizeLookupText(selectedLabel);
+    if (!seen.has(normalized)) {
+      values.unshift(selectedLabel);
+    }
+  }
+
+  return values;
+}
+
+function getOwnerInputValue(selectedId = "") {
+  if (!selectedId) return "库存";
+  const selectedOwner = state.options.colleagues.find((item) => item.id === selectedId);
+  return selectedOwner ? `${selectedOwner.displayName} (${selectedOwner.department})` : "";
+}
+
 function createField({ name, label, type = "text", value = "", options = [], note = "", required = false, wide = false, list = "", disabled = false }) {
   if (type === "textarea") {
     return `
@@ -351,6 +454,17 @@ function createField({ name, label, type = "text", value = "", options = [], not
       <label for="${name}">${label}${required ? " *" : ""}</label>
       <input id="${name}" name="${name}" type="${type}" value="${escapeHtml(value)}" ${required ? "required" : ""} ${list ? `list="${list}"` : ""} ${disabled ? "disabled" : ""} />
       ${note ? `<div class="field-note">${escapeHtml(note)}</div>` : ""}
+    </div>
+  `;
+}
+
+function createOwnerAutocompleteField(selectedId = "") {
+  return `
+    <div class="field-wrap">
+      <label for="ownerInput">归属人</label>
+      <input id="ownerInput" name="ownerInput" type="text" value="${escapeHtml(getOwnerInputValue(selectedId))}" />
+      <div id="owner-suggestions" class="owner-suggestions hidden"></div>
+      <div class="field-note">输入姓名、拼音或邮箱自动匹配；填写“库存”或留空表示仍在库存。</div>
     </div>
   `;
 }
@@ -571,13 +685,7 @@ function openComputerEditor(mode, item = null) {
         list: "model-list"
       })}
       ${createField({ name: "macAddress", label: "MAC 地址", value: item?.macAddress === "N/A" ? "" : item?.macAddress || "" })}
-      ${createField({
-        name: "ownerId",
-        label: "归属人",
-        type: "select",
-        value: item?.ownerId || "",
-        options: buildOwnerOptions(item?.ownerId || "")
-      })}
+      ${createOwnerAutocompleteField(item?.ownerId || "")}
       ${createField({ name: "remark", label: "备注", type: "textarea", value: item?.remark || "", wide: true })}
       ${createField({
         name: "authorizationPassword",
@@ -588,10 +696,86 @@ function openComputerEditor(mode, item = null) {
         wide: true
       })}
     </div>
+    <input id="ownerId" name="ownerId" type="hidden" value="${escapeHtml(item?.ownerId || "")}" />
     ${buildDataList("model-list", state.options.models)}
   `;
 
+  bindOwnerField();
   editorModal.showModal();
+}
+
+function bindOwnerField() {
+  const ownerInput = document.getElementById("ownerInput");
+  const ownerIdField = document.getElementById("ownerId");
+  const ownerSuggestions = document.getElementById("owner-suggestions");
+  if (!ownerInput || !ownerIdField || !ownerSuggestions) return;
+
+  const hideSuggestions = () => {
+    ownerSuggestions.innerHTML = "";
+    ownerSuggestions.classList.add("hidden");
+  };
+
+  const selectOwner = (candidate) => {
+    ownerInput.value = candidate ? candidate.label : "库存";
+    ownerIdField.value = candidate ? candidate.id : "";
+    hideSuggestions();
+  };
+
+  const renderSuggestions = () => {
+    const candidates = searchOwnerCandidates(ownerInput.value).slice(0, 8);
+    if (!candidates.length) {
+      hideSuggestions();
+      return;
+    }
+
+    ownerSuggestions.innerHTML = candidates
+      .map(
+        (candidate) => `
+          <button type="button" class="owner-suggestion-item" data-owner-id="${escapeHtml(candidate.id)}">
+            <span class="owner-suggestion-name">${escapeHtml(candidate.displayName)}</span>
+            <span class="owner-suggestion-meta">${escapeHtml(candidate.searchValues.filter(Boolean).slice(0, 3).join(" / "))}</span>
+          </button>
+        `
+      )
+      .join("");
+    ownerSuggestions.classList.remove("hidden");
+  };
+
+  const syncOwner = () => {
+    const result = resolveOwnerInputToId(ownerInput.value, ownerIdField.value);
+    ownerIdField.value = result.matched ? result.id : "";
+    renderSuggestions();
+  };
+
+  ownerInput.addEventListener("input", syncOwner);
+  ownerInput.addEventListener("change", syncOwner);
+  ownerInput.addEventListener("focus", () => {
+    if (normalizeLookupText(ownerInput.value) === "库存") {
+      ownerInput.value = "";
+      ownerIdField.value = "";
+    }
+    renderSuggestions();
+  });
+  ownerInput.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (!normalizeLookupText(ownerInput.value)) {
+        ownerInput.value = "库存";
+        ownerIdField.value = "";
+      }
+      hideSuggestions();
+    }, 120);
+  });
+
+  ownerSuggestions.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-owner-id]");
+    if (!button) return;
+    const candidate = buildOwnerLookupItems().find((item) => item.id === button.dataset.ownerId);
+    if (candidate) {
+      selectOwner(candidate);
+    }
+  });
+
+  syncOwner();
 }
 
 function updateMentorFieldState() {
@@ -606,7 +790,8 @@ function updateMentorFieldState() {
   }
 }
 
-function openPersonEditor(mode, item = null) {
+async function openPersonEditor(mode, item = null) {
+  await loadOptions();
   state.editor = {
     kind: "person",
     mode,
@@ -657,15 +842,16 @@ function openPersonEditor(mode, item = null) {
   editorModal.showModal();
 }
 
-function openEditorForCreate() {
+async function openEditorForCreate() {
   if (state.view === "people") {
-    openPersonEditor("create");
+    await openPersonEditor("create");
     return;
   }
+  await loadOptions();
   openComputerEditor("create");
 }
 
-function openEditorForEdit() {
+async function openEditorForEdit() {
   const item = getSelectedRow();
   if (!item) {
     setEditorAlert("");
@@ -674,21 +860,28 @@ function openEditorForEdit() {
   }
 
   if (state.view === "people") {
-    openPersonEditor("edit", item);
+    await openPersonEditor("edit", item);
     return;
   }
 
+  await loadOptions();
   openComputerEditor("edit", item);
 }
 
 async function submitComputerForm(formData) {
+  const ownerInput = formData.get("ownerInput");
+  const ownerMatch = resolveOwnerInputToId(ownerInput, formData.get("ownerId"));
+  if (!ownerMatch.matched) {
+    throw new Error("归属人未正确匹配，请从自动提示中选择，或填写“库存”。");
+  }
+
   const payload = {
     computerName: formData.get("computerName"),
     serialNumber: formData.get("serialNumber"),
     assetNumber: formData.get("assetNumber"),
     model: formData.get("model"),
     macAddress: formatMacAddressDisplay(formData.get("macAddress")),
-    ownerId: formData.get("ownerId"),
+    ownerId: ownerMatch.id,
     remark: formData.get("remark"),
     authorizationPassword: formData.get("authorizationPassword")
   };
@@ -764,6 +957,8 @@ async function handleDeleteAction() {
 
 function renderMailPreview(data) {
   setMailAlert("");
+  mailResult.innerHTML = "";
+  mailResult.classList.add("hidden");
   mailHint.textContent = `以下收件人会按桌面端规则生成邮件草稿。有效收件人 ${data.validRecipients.length} 位，跳过 ${data.skippedRecipients.length} 位。`;
 
   mailList.innerHTML = data.validRecipients.length
@@ -811,16 +1006,51 @@ function getSelectedMailRecipientIds() {
   return [...mailList.querySelectorAll(".mail-checkbox:checked")].map((input) => input.value);
 }
 
-function openMailtoLinks(recipients) {
-  recipients.forEach((recipient, index) => {
+function openMailtoLink(mailto) {
+  const link = document.createElement("a");
+  link.href = mailto;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+function renderMailResult(result) {
+  const createdCount = result.createdItems.length;
+  const skippedCount = result.skippedItems.length;
+  const mailtoPayload = escapeHtml(JSON.stringify(result.selectedRecipients.map((item) => item.mailto)));
+
+  mailResult.innerHTML = `
+    <div class="mail-result-summary">
+      已生成 ${createdCount} 封邮件草稿入口，跳过 ${skippedCount} 位。
+    </div>
+    <div class="mail-result-actions">
+      <button type="button" class="primary-btn mail-open-all-btn" data-mailto-list="${mailtoPayload}">一键打开全部邮件</button>
+    </div>
+    <div class="mail-result-list">
+      ${result.selectedRecipients
+        .map(
+          (recipient) => `
+            <div class="mail-result-item">
+              <div>
+                <div class="mail-item-title">${escapeHtml(recipient.display_name)} (${escapeHtml(recipient.email)})</div>
+                <div class="mail-item-meta">${escapeHtml(recipient.computer_count)} 台电脑，来源：${escapeHtml((recipient.source_labels || []).join("、"))}</div>
+              </div>
+              <button type="button" class="secondary-btn mail-open-btn" data-mailto="${escapeHtml(recipient.mailto)}">打开邮件</button>
+            </div>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+  mailResult.classList.remove("hidden");
+}
+
+function openMailtoLinks(mailtoList) {
+  mailtoList.forEach((mailto, index) => {
     setTimeout(() => {
-      const link = document.createElement("a");
-      link.href = recipient.mailto;
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }, index * 150);
+      openMailtoLink(mailto);
+    }, index * 250);
   });
 }
 
@@ -838,23 +1068,10 @@ async function generateMailDrafts() {
     body: JSON.stringify({ selectedRecipientIds })
   });
 
-  openMailtoLinks(result.selectedRecipients);
-
-  const summary = [
-    `已生成草稿：${result.createdItems.length} 封`,
-    `已跳过：${result.skippedItems.length}`
-  ];
-
-  if (result.skippedItems.length) {
-    summary.push("");
-    summary.push("跳过明细：");
-    result.skippedItems.forEach((item) => {
-      summary.push(`- ${item.display_name} (${item.email || "无邮箱"}): ${item.result_message}`);
-    });
+  renderMailResult(result);
+  if (result.selectedRecipients.length === 1) {
+    openMailtoLink(result.selectedRecipients[0].mailto);
   }
-
-  mailModal.close();
-  window.alert(summary.join("\n"));
 }
 
 function syncViewUI() {
@@ -979,8 +1196,12 @@ tableBody.addEventListener("dblclick", async (event) => {
   await openDetailModal();
 });
 
-addBtn.addEventListener("click", openEditorForCreate);
-editBtn.addEventListener("click", openEditorForEdit);
+addBtn.addEventListener("click", () => {
+  openEditorForCreate().catch((error) => window.alert(error.message));
+});
+editBtn.addEventListener("click", () => {
+  openEditorForEdit().catch((error) => window.alert(error.message));
+});
 deleteBtn.addEventListener("click", () => {
   handleDeleteAction().catch((error) => window.alert(error.message));
 });
@@ -1011,6 +1232,22 @@ document.getElementById("mail-clear-all").addEventListener("click", () => {
 });
 document.getElementById("mail-generate").addEventListener("click", () => {
   generateMailDrafts().catch((error) => setMailAlert(error.message));
+});
+mailResult.addEventListener("click", (event) => {
+  const openAllButton = event.target.closest("[data-mailto-list]");
+  if (openAllButton) {
+    try {
+      const mailtoList = JSON.parse(openAllButton.dataset.mailtoList);
+      openMailtoLinks(mailtoList);
+    } catch (error) {
+      setMailAlert("批量打开邮件失败，请逐个打开。");
+    }
+    return;
+  }
+
+  const button = event.target.closest("[data-mailto]");
+  if (!button) return;
+  openMailtoLink(button.dataset.mailto);
 });
 
 window.addEventListener("resize", syncWorkspaceHeights);

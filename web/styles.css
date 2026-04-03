@@ -606,6 +606,7 @@ button {
 .field-wrap {
   display: grid;
   gap: 8px;
+  position: relative;
 }
 
 .field-wrap.wide {
@@ -640,6 +641,51 @@ button {
   font-size: 12px;
 }
 
+.owner-suggestions {
+  position: absolute;
+  top: calc(100% - 10px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 36px rgba(11, 35, 63, 0.16);
+}
+
+.owner-suggestions.hidden {
+  display: none;
+}
+
+.owner-suggestion-item {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: #f8fbff;
+  text-align: left;
+  color: var(--text);
+}
+
+.owner-suggestion-item:hover {
+  border-color: var(--brand);
+  background: #eef6ff;
+}
+
+.owner-suggestion-name {
+  font-weight: 700;
+}
+
+.owner-suggestion-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .editor-actions {
   display: flex;
   justify-content: flex-end;
@@ -661,7 +707,8 @@ button {
 }
 
 .mail-list,
-.mail-skipped {
+.mail-skipped,
+.mail-result {
   display: grid;
   gap: 12px;
 }
@@ -702,6 +749,43 @@ button {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
+}
+
+.mail-result.hidden {
+  display: none;
+}
+
+.mail-result-summary {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f8fbff;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.mail-result-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mail-result-list {
+  display: grid;
+  gap: 10px;
+}
+
+.mail-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+}
+
+.mail-open-btn {
+  flex: 0 0 auto;
 }
 
 @keyframes rise-in {
